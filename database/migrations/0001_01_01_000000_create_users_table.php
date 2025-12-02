@@ -41,6 +41,7 @@ return new class extends Migration
         DB::table('users')->insert([
             'name' => 'John Cannon Matucad',
             'email' => 'jcmatucad@desco.ph',
+            'credential' => 'ADMIN',
             'password' => Hash::make('admin'), // You can change this later
             'created_at' => now(),
             'updated_at' => now(),

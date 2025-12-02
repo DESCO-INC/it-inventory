@@ -1,33 +1,6 @@
 <x-layout>
     <h1 class="text-xl font-semibold text-white mb-5">Welcome, {{ Auth::user()->name }}</h1>
-
-    <livewire:inventory-dashboard />
-
-    <!-- Card with Top Right Buttons -->
-    <div class="bg-white rounded-lg shadow-sm overflow-hidden mb-3">
-        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between px-6 py-4">
-            <h2 class="text-lg font-medium text-gray-800">Item Inventory</h2>
-            <!-- Button Row (Right) -->
-            <div class="flex gap-2 mt-4 sm:mt-0">
-                <a href="{{ route('units.create') }}"
-                    class="bg-green-500 text-white text-xs px-3 py-2 rounded hover:bg-green-600">
-                    Add Item
-                </a>
-                <a href="" class="bg-blue-500 text-white text-xs px-3 py-2 rounded hover:bg-blue-600 hidden">
-                    Export
-                </a>
-                <button class="bg-blue-500 text-white text-xs px-3 py-2 rounded hover:bg-blue-600 hidden" id="importButton">
-                    Import
-                </button>
-                <a href=""
-                    class="bg-blue-500 text-white text-xs px-3 py-2 rounded hover:bg-blue-600 hidden">
-                    Download Template
-                </a>
-            </div>
-        </div>
-    </div>
-
-
+    
     <livewire:inventory-table />
 
     <!-- Import Item Modal -->

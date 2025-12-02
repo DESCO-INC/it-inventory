@@ -16,6 +16,7 @@ class InventoryDashboard extends Component
             'active'   => $inventory->filter(fn($i) => strtoupper($i->status) === 'ACTIVE')->count(),
             'inactive' => $inventory->filter(fn($i) => strtoupper($i->status) === 'INACTIVE')->count(),
             'disposed' => $inventory->filter(fn($i) => strtoupper($i->status) === 'DISPOSED')->count(),
+            'unassigned' => Inventory::doesntHave('accountability')->count(),
         ];
         
         return view('livewire.inventory-dashboard')->with([
