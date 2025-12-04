@@ -130,8 +130,10 @@
                         </div>
                     </div>
 
+                    <h1>Encoded by: {{ $unit['created_by'] }}</h1>
+
                     <!-- Form Actions -->
-                    <div class="mt-8 flex items-center justify-end gap-3 pt-6 col-span-3">
+                    <div class="mt-3 flex items-center justify-end gap-3 pt-6 col-span-3">
                         <!-- Update Info Button -->
                         <button type="button" id="editButton"
                             class="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition">

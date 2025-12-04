@@ -19,8 +19,8 @@
         <div
             class="relative bg-[#a6d8f5] rounded-xl shadow-sm border border-[#a6d8f5] p-4 hover:shadow-md transition-all duration-200 flex flex-col justify-center overflow-hidden cursor-pointer"
             wire:click="$set('search', 'ACTIVE')">
-            <div class="absolute right-0 top-0 translate-x-3 -translate-y-3 opacity-[0.5] pointer-events-none">
-                <x-heroicon-o-check-badge class="w-20 h-20 text-[#00a3d9]" />
+            <div class="absolute right-0 top-0 translate-x-2 translate-y-2 opacity-[0.5] pointer-events-none">
+                <x-heroicon-o-check-badge class="w-30 h-30 text-[#00a3d9]" />
             </div>
             <p class="text-xs font-medium text-gray-600 uppercase tracking-wide">Active Items</p>
             <p class="mt-1 text-2xl font-bold text-gray-900">{{ $statusCounts['active'] }}</p>
@@ -31,8 +31,8 @@
             wire:click="$set('search', 'UNASSIGNED')">
 
             <!-- Background Icon -->
-            <div class="absolute right-0 top-0 translate-x-3 -translate-y-3 opacity-[0.5] pointer-events-none">
-                <x-heroicon-o-user-group class="w-20 h-20 text-[#d9823b]" />
+            <div class="absolute right-0 top-0 translate-x-2 translate-y-2 opacity-[0.5] pointer-events-none">
+                <x-heroicon-o-user-group class="w-30 h-30 text-[#d9823b]" />
             </div>
 
             <p class="text-xs font-medium text-gray-600 uppercase tracking-wide">Unassigned Items</p>
@@ -43,8 +43,8 @@
         <div
             class="relative bg-[#f5f5a6] rounded-xl shadow-sm border border-[#f5f5a6] p-4 hover:shadow-md transition-all duration-200 flex flex-col justify-center overflow-hidden cursor-pointer"
             wire:click="$set('search', 'INACTIVE')">
-            <div class="absolute right-0 top-0 translate-x-3 -translate-y-3 opacity-[0.5] pointer-events-none">
-                <x-heroicon-o-x-circle class="w-20 h-20 text-[#e0b800]" />
+            <div class="absolute right-0 top-0 translate-x-2 translate-y-2 opacity-[0.5] pointer-events-none">
+                <x-heroicon-o-x-circle class="w-30 h-30 text-[#e0b800]" />
             </div>
             <p class="text-xs font-medium text-gray-600 uppercase tracking-wide">Inactive Items</p>
             <p class="mt-1 text-2xl font-bold text-gray-900">{{ $statusCounts['inactive'] }}</p>
@@ -54,8 +54,8 @@
         <div
             class="relative bg-[#f5a6a6] rounded-xl shadow-sm border border-[#f5a6a6] p-4 hover:shadow-md transition-all duration-200 flex flex-col justify-center overflow-hidden cursor-pointer"
             wire:click="$set('search', 'DISPOSED')">
-            <div class="absolute right-0 top-0 translate-x-3 -translate-y-3 opacity-[0.5] pointer-events-none">
-                <x-heroicon-o-trash class="w-20 h-20 text-[#d93030]" />
+            <div class="absolute right-0 top-0 translate-x-2 translate-y-2 opacity-[0.5] pointer-events-none">
+                <x-heroicon-o-trash class="w-30 h-30 text-[#d93030]" />
             </div>
             <p class="text-xs font-medium text-gray-600 uppercase tracking-wide">Disposed Items</p>
             <p class="mt-1 text-2xl font-bold text-gray-900">{{ $statusCounts['disposed'] }}</p>
