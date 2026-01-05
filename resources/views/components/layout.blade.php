@@ -100,11 +100,11 @@
                     <!-- Nav Links -->
                     <div class="flex items-center space-x-6 ml-8">
                         @auth
-                        @if (Auth::user()->credential === 'ADMIN')
-                            <x-nav-link href="{{ route('units.index') }}" :active="request()->routeIs('units.index')">
-                                Inventory List
-                            </x-nav-link>
-                        @endif
+                            @if (Auth::user()->credential === 'ADMIN')
+                                <x-nav-link href="{{ route('units.index') }}" :active="request()->routeIs('units.index')">
+                                    Inventory List
+                                </x-nav-link>
+                            @endif
                             <x-nav-link href="{{ route('accountability.index') }}" :active="request()->routeIs('accountability.index')">
                                 Accountability List
                             </x-nav-link>
@@ -127,6 +127,12 @@
                     @endguest
 
                     @auth
+                        {{-- <x-nav-dropdown label="System Maintenance" :items="[
+                            ['label' => 'Reports', 'url' => '/maintenance/reports'],
+                            ['label' => 'Manage Users', 'url' => '/maintenance/users'],
+                            ['label' => 'Audit Trail ', 'url' => '/maintenance/settings'],
+                        ]" /> --}}
+
                         <!-- Profile Dropdown -->
                         <div class="relative">
                             <!-- Profile Button -->

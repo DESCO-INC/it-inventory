@@ -5,6 +5,7 @@ use App\Http\Controllers\SessionController;
 use App\Http\Controllers\RegisterUserController;
 use App\Http\Controllers\UnitController;
 use App\Http\Controllers\AccountabilityController;
+use App\Http\Controllers\MaintenanceController;
 
 
 // Auth
@@ -16,10 +17,30 @@ Route::get('/register', [RegisterUserController::class, 'index']);
 Route::post('/register', [RegisterUserController::class, 'store']);
 
 
-Route::resource('units', UnitController::class)->except(['show'])->middleware('auth');
-Route::get('/units/next-control/{categoryId}', [UnitController::class, 'getNextControlNo']);
+Route::prefix('units')->middleware(['auth'])->controller(UnitController::class)->group(function () {
+    Route::get('/', 'index')->name('units.index');
+    Route::get('/create', 'create')->name('units.create');
+    Route::post('/', 'store')->name('units.store'); // <-- Add this
+    Route::get('/{unit}/edit', 'edit')->name('units.edit');
+    Route::put('/{unit}/update', 'update')->name('units.update');
+    Route::delete('/{unit}/destroy', 'destroy')->name('units.destroy');
+
+    
+    Route::get('/next-control/{categoryId}', 'getNextControlNo')->name('units.getNextControlNo');
+});
+
 Route::post('/inventory/import', [UnitController::class, 'import'])->name('inventory.import');
 
+Route::prefix('accountability')->middleware(['auth'])->controller(AccountabilityController::class)->group(function () {
+    Route::get('/', 'index')->name('accountability.index');
+    Route::post('/store', 'store')->name('accountability.store');
+    Route::put('/{id}', 'update')->name('accountability.update'); 
+    Route::delete('/{id}/destroy', 'destroy')->name('accountability.destroy');
 
-Route::resource('accountability', AccountabilityController::class)->except(['show'])->middleware('auth');
-Route::get('/accountability/print', [AccountabilityController::class, 'print'])->name('accountability.print')->middleware('auth');
+    Route::get('/accountability/print', 'print')->name('accountability.print');
+});
+
+
+Route::prefix('maintenance')->middleware(['auth'])->controller(MaintenanceController::class)->group(function () {
+    Route::get('/reports', 'reports')->name('maintenance.reports');
+});

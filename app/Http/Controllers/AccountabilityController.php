@@ -9,9 +9,42 @@ use App\Models\Inventory;
 
 class AccountabilityController extends Controller
 {
-   public function index()
+    public function index(Request $request)
     {
-        return view('accountability.index');
+        $search = $request->input('search');
+        $department = $request->input('department');
+
+        // 🔹 Get UNIQUE departments for the select
+        $departments = Accountability::query()->whereNotNull('department')->distinct()->orderBy('department')->pluck('department', 'department'); // ['IT' => 'IT']
+
+        $accountability = Accountability::with('inventory')
+            ->whereIn('id', function ($sub) {
+                $sub->selectRaw('MAX(id)')->from('accountability')->groupBy('inventory_id');
+            })
+            // 🔹 filter by department
+            ->when($department, function ($q) use ($department) {
+                $q->where('department', $department);
+            })
+            // 🔹 existing search
+            ->when($search, function ($q) use ($search) {
+                $q->where(function ($query) use ($search) {
+                    $query
+                        ->where('name', 'LIKE', "%{$search}%")
+                        ->orWhere('department', 'LIKE', "%{$search}%")
+                        ->orWhere('location', 'LIKE', "%{$search}%")
+                        ->orWhere('date_received', 'LIKE', "%{$search}%")
+                        ->orWhereHas('inventory', function ($inv) use ($search) {
+                            $inv->where('control_no', 'LIKE', "%{$search}%")
+                                ->orWhere('model_name', 'LIKE', "%{$search}%")
+                                ->orWhere('status', 'LIKE', "%{$search}%");
+                        });
+                });
+            })
+            ->orderByDesc('id')
+            ->paginate(10)
+            ->withQueryString(); // 🔹 keep filters on pagination
+
+        return view('accountability.index', compact('accountability', 'search', 'departments', 'department'));
     }
 
     public function print(Request $request)
@@ -42,16 +75,13 @@ class AccountabilityController extends Controller
             'department' => 'required',
             'location' => 'required',
             'date_received' => 'required',
-            'date_returned' => 'nullable',
         ]);
 
         $validated['created_by'] = Auth::user()->name ?? 'System';
 
         Accountability::create($validated);
 
-        return redirect()
-            ->back()
-            ->with('success', 'New Accountability has been successfully added!');
+        return redirect()->back()->with('success', 'New Accountability has been successfully added!');
     }
 
     public function update(Request $request, $id)
@@ -73,6 +103,20 @@ class AccountabilityController extends Controller
 
         return redirect()->back()->with('success', 'Accountability updated successfully.');
     }
+    
+    public function destroy($id)
+    {
+        $accountability = Accountability::findOrFail($id);
 
+        try {
+            $unitId = $accountability->inventory_id; // get the unit ID before deleting
+            $accountability->delete();
 
+            // redirect to the unit edit page
+            return redirect()->route('units.edit', $unitId)->with('success', 'Accountability deleted successfully.');
+        } catch (\Exception $e) {
+            // redirect to the unit edit page even if delete fails
+            return redirect()->route('units.edit', $accountability->inventory_id)->with('error', 'Failed to delete accountability. Please try again.');
+        }
+    }
 }

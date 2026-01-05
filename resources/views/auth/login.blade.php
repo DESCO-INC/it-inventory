@@ -9,18 +9,18 @@
                 <form method="POST" action="{{ url('/login') }}">
                 @csrf
                 <div class="mb-2">
-                    <x-form-label>Email</x-form-label>
+                    <x-form.label>Email</x-form.label>
                     <div class="mt-2">
-                        <x-form-input id="email" name="email" placeholder="JaneSmith@gmail.com" required />
-                        <x-form-error name='email'/>
+                        <x-form.input  id="email" name="email" placeholder="JaneSmith@gmail.com" required />
+                        <x-form.error name='email'/>
                     </div>
                 </div>
 
                 <div class="mb-2">
-                    <x-form-label>Password</x-form-label>
+                    <x-form.label>Password</x-form.label>
                     <div class="mt-2">
-                        <x-form-input type="password" id="password" name="password" required/>
-                        <x-form-error name='password'/>
+                        <x-form.input  type="password" id="password" name="password" required/>
+                        <x-form.error name='password'/>
                     </div>
                 </div>
 

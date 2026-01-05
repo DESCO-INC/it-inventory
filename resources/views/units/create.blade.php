@@ -1,5 +1,13 @@
 <x-layout>
-    <h1 class="text-xl font-semibold text-white mb-5">Add New Item</h1>
+    <!-- Card with Top Right Buttons -->
+    <div class="bg-white rounded-lg shadow-sm overflow-hidden mb-3">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between px-6 py-4">
+            <h2 class="text-lg font-medium text-gray-800">Add New Inventory Item</h2>
+            <!-- Button Row (Right) -->
+            <div class="flex gap-2 mt-4 sm:mt-0">
+            </div>
+        </div>
+    </div>
 
     <div class="bg-white rounded-lg shadow-sm overflow-hidden">
         <!-- Table -->
@@ -8,16 +16,16 @@
                 @csrf
 
                 <div class="mb-2">
-                    <x-form-label for="model_name">Model Name</x-form-label>
+                    <x-form.label for="model_name" required>Model Name</x-form.label>
                     <div class="mt-2">
-                        <x-form-input id="model_name" name="model_name"/>
-                        <x-form-error name='model_name'/>
+                        <x-form.input id="model_name" name="model_name"/>
+                        <x-form.error name='model_name'/>
                     </div>
                 </div>
 
                 <!-- Category -->
                 <div class="mb-2">
-                    <x-form-label for="unit_category_id">Category</x-form-label>
+                    <x-form.label for="unit_category_id">Category</x-form.label>
                     <select name="unit_category_id" id="unit_category_id" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-focus:ring-green-500 focus:border-green-500 outline-none" required>
                         <option value="">Select Category</option>
                         @foreach ($category as $categories)
@@ -31,13 +39,13 @@
                             </option>
                         @endforeach
                     </select>
-                    <x-form-error name='unit_category_id'></x-form-error>
+                    <x-form.error name='unit_category_id'></x-form.error>
                 </div>
 
                 <div class="mb-2">
-                    <x-form-label for="control_no" class="cursor-default">
+                    <x-form.label for="control_no" class="cursor-default">
                         Control Number
-                    </x-form-label>
+                    </x-form.label>
 
                     <div class="relative">
                         <input 
@@ -60,47 +68,47 @@
                         </div>
                     </div>
 
-                    <x-form-error name="control_no" />
+                    <x-form.error name="control_no" />
                 </div>
 
 
 
                 <div class="mb-2">
-                    <x-form-label for="serial">Serial</x-form-label>
+                    <x-form.label for="serial">Serial</x-form.label>
                     <div class="mt-2">
-                        <x-form-input id="serial" name="serial"/>
-                        <x-form-error name='serial'/>
+                        <x-form.input id="serial" name="serial"/>
+                        <x-form.error name='serial'/>
                     </div>
                 </div>
 
                 <div class="mb-2">
-                    <x-form-label for="purchase_no">Purchase Reference</x-form-label>
+                    <x-form.label for="purchase_no">Purchase Reference</x-form.label>
                     <div class="mt-2">
-                        <x-form-input id="purchase_no" name="purchase_no"/>
-                        <x-form-error name='purchase_no'/>
+                        <x-form.input id="purchase_no" name="purchase_no"/>
+                        <x-form.error name='purchase_no'/>
                     </div>
                 </div>
 
                 <div class="mb-2">
-                    <x-form-label for="purchase_date">Purchase Date</x-form-label>
+                    <x-form.label for="purchase_date">Purchase Date</x-form.label>
                     <div class="mt-2">
-                        <x-form-input type="date" id="purchase_date" name="purchase_date"/>
-                        <x-form-error name='purchase_date'/>
+                        <x-form.input type="date" id="purchase_date" name="purchase_date"/>
+                        <x-form.error name='purchase_date'/>
                     </div>
                 </div>
 
                 <div class="mb-2">
-                    <x-form-label for="manufacturing_date">Manufacturing Date</x-form-label>
+                    <x-form.label for="manufacturing_date">Manufacturing Date</x-form.label>
                     <div class="mt-2">
-                        <x-form-input type="date" id="manufacturing_date" name="manufacturing_date"/>
-                        <x-form-error name='manufacturing_date'/>
+                        <x-form.input type="date" id="manufacturing_date" name="manufacturing_date"/>
+                        <x-form.error name='manufacturing_date'/>
                     </div>
                 </div>
 
                 <div class="mb-2">
-                    <x-form-label for="depreciation_date">
+                    <x-form.label for="depreciation_date">
                         Depreciation Date
-                    </x-form-label>
+                    </x-form.label>
 
                     <div class="relative mt-2">
                         <input 
@@ -123,39 +131,37 @@
                         </div>
                     </div>
 
-                    <x-form-error name="depreciation_date" />
+                    <x-form.error name="depreciation_date" />
                 </div>
 
-
                 <div class="mb-2">
-                    <x-form-label for="status">Status</x-form-label>
+                    <x-form.label for="status">Status</x-form.label>
                     <select name="status" id="status" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-focus:ring-green-500 focus:border-green-500 outline-none" required>
                         <option value="">Select Status</option>
                         <option value="ACTIVE">ACTIVE</option>
-                        <option value="INACTIVE">INACTIVE</option>
+                        <option value="DEFECTIVE">DEFECTIVE</option>
                         <option value="DISPOSED">DISPOSED</option>
                     </select>
-                    <x-form-error name='status'></x-form-error>
+                    <x-form.error name='status'></x-form.error>
                 </div>
 
                 <div class="mb-2 col-span-3">
-                    <x-form-label for="remarks">Remarks</x-form-label>
+                    <x-form.label for="remarks">Remarks</x-form.label>
                     <div class="mt-2">
-                        <x-form-input id="remarks" name="remarks"/>
-                        <x-form-error name='remarks'/>
+                        <x-form.input id="remarks" name="remarks"/>
+                        <x-form.error name='remarks'/>
                     </div>
                 </div>
 
                 <!-- Form Actions -->
                 <div class="mt-8 flex items-center justify-end gap-3 pt-6 col-span-3">
                     <a href="{{ route('units.index') }}" 
-                    class="px-4 py-2 text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 transition">
+                    class="text-black bg-gray-100 hover:bg-gray-200 text-xs px-2 py-1 rounded">
                         Cancel
                     </a>
-                    <button type="submit" 
-                            class="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition">
+                    <x-basic.button type="submit" variant="success">
                         Add Item
-                    </button>
+                    </x-basic.button>
                 </div>
             </form>
         </div>

@@ -15,13 +15,50 @@ use App\Imports\InventoryImport;
 
 class UnitController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        // Redirect guests to login
-        if (Auth::guest()) {
-            return redirect('/login');
-        }
-        return view('units.index');
+        $search = $request->input('search');
+
+        $unitsQuery = Inventory::with(['unit_category', 'latestAccountability'])
+            ->withCount('accountability')
+            ->when($search, function ($q) use ($search) {
+                $searchUpper = strtoupper($search);
+
+                // Filter by ASSIGNED / UNASSIGNED if typed
+                if ($searchUpper === 'ASSIGNED') {
+                    $q->whereHas('latestAccountability', function ($q2) {
+                        $q2->whereNull('date_returned');
+                    });
+                } elseif ($searchUpper === 'UNASSIGNED') {
+                    $q->whereDoesntHave('latestAccountability', function ($q2) {
+                        $q2->whereNull('date_returned');
+                    });
+                } else {
+                    // Normal search for text fields
+                    $q->where(function ($query) use ($search) {
+                        $query
+                            ->where('control_no', 'LIKE', "%{$search}%")
+                            ->orWhere('model_name', 'LIKE', "%{$search}%")
+                            ->orWhere('serial', 'LIKE', "%{$search}%")
+                            ->orWhere('purchase_no', 'LIKE', "%{$search}%")
+                            ->orWhere('status', 'LIKE', "%{$search}%")
+                            ->orWhere('purchase_date', 'LIKE', "%{$search}%");
+                    });
+                }
+            });
+
+        $units = $unitsQuery->orderByDesc('id')->paginate(10);
+
+        // Map accountability status for each unit
+        $units->getCollection()->transform(function ($unit) {
+            $latest = $unit->latestAccountability;
+            $unit->accountability_status = $latest && !$latest->date_returned ? 'ASSIGNED' : 'UNASSIGNED';
+            return $unit;
+        });
+
+        $stats = Inventory::stats();
+
+        return view('units.index', compact('units', 'search', 'stats'));
     }
 
     public function create()
@@ -58,18 +95,13 @@ class UnitController extends Controller
     public function edit(Inventory $unit)
     {
         $category = UnitCategory::get();
-        $accountability = Accountability::where('inventory_id', $unit->id)->get();
+        $accountability = Accountability::where('inventory_id', $unit->id)->orderByDesc('id')->get();
         $department = Department::get();
 
-        return view('units.edit', [
-            'unit' => $unit,
-            'category' => $category,
-            'accountability' => $accountability,
-            'department' => $department,
-        ]);
+        return view('units.edit', compact('unit', 'category', 'accountability', 'department'));
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, Inventory $unit)
     {
         $validated = $request->validate([
             'serial' => 'nullable|string|max:255',
@@ -79,9 +111,10 @@ class UnitController extends Controller
             'depreciation_date' => 'nullable|date',
             'status' => 'required',
             'remarks' => 'nullable|string|max:255',
+            'unit_weight' => 'nullable|string|max:255',
+            'disposed_location' => 'nullable|string|max:255',
         ]);
 
-        $unit = \App\Models\Inventory::findOrFail($id);
         $unit->update($validated);
 
         return back()->with('success', 'Unit information updated successfully.');

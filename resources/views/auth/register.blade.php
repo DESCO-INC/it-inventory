@@ -14,34 +14,34 @@
               @csrf
               
               <div class="mb-2">
-                  <x-form-label>Name</x-form-label>
+                  <x-form.label>Name</x-form.label>
                   <div class="mt-2">
-                      <x-form-input id="name" name="name" placeholder="Jane Smith" required />
-                      <x-form-error name='name'/>
+                      <x-form.input id="name" name="name" placeholder="Jane Smith" required />
+                      <x-form.error name='name'/>
                   </div>
               </div>
 
               <div class="mb-2">
-                  <x-form-label>Email</x-form-label>
+                  <x-form.label>Email</x-form.label>
                   <div class="mt-2">
-                      <x-form-input id="email" name="email" placeholder="JaneSmith@gmail.com" required />
-                      <x-form-error name='email'/>
+                      <x-form.input id="email" name="email" placeholder="JaneSmith@gmail.com" required />
+                      <x-form.error name='email'/>
                   </div>
               </div>
 
               <div class="mb-2">
-                  <x-form-label>Password</x-form-label>
+                  <x-form.label>Password</x-form.label>
                   <div class="mt-2">
-                      <x-form-input type="password" id="password" name="password" required/>
-                      <x-form-error name='password'/>
+                      <x-form.input type="password" id="password" name="password" required/>
+                      <x-form.error name='password'/>
                   </div>
               </div>
 
               <div class="mb-2">
-                  <x-form-label>Confirm Password</x-form-label>
+                  <x-form.label>Confirm Password</x-form.label>
                   <div class="mt-2">
-                      <x-form-input type="password" id="password_confirmation" name="password_confirmation" required/>
-                      <x-form-error name='password_confirmation'/>
+                      <x-form.input type="password" id="password_confirmation" name="password_confirmation" required/>
+                      <x-form.error name='password_confirmation'/>
                   </div>
               </div>
             </div>

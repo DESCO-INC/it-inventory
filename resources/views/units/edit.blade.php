@@ -1,96 +1,103 @@
 <x-layout>
-    <h1 class="text-xl font-semibold text-gray-800 mb-5">View Information</h1>
+
+    <!-- Card with Top Right Buttons -->
+    <div class="bg-white rounded-lg shadow-sm overflow-hidden mb-3">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between px-6 py-4">
+            <h2 class="text-lg font-medium text-gray-800">View Information</h2>
+            <!-- Button Row (Right) -->
+            <div class="flex gap-2 mt-4 sm:mt-0">
+                <a href="{{ route('units.index') }}"
+                    class="bg-green-500 text-white text-xs px-2 py-1 rounded hover:bg-green-600">
+                    back to list
+                </a>
+            </div>
+        </div>
+    </div>
 
     <div class="grid grid-cols-6 gap-4">
         <div class="bg-white rounded-lg shadow-sm overflow-hidden col-span-3">
-            <!-- Table --><!-- Header -->
-            <div class="px-6 py-5 border-b border-gray-200 flex items-center">
-                <h1 class="text-xl font-semibold text-gray-800">Item Information</h1>
-
-                <div class="flex-1"></div>
-
-                <a href="{{ route('units.index') }}"
-                    class="inline-block px-4 py-2 bg-green-500 text-white rounded-md shadow hover:bg-green-600 transition font-medium ml-2 cursor-pointer">
-                    back to list
-                </a>
-
-
+            <!-- Header -->
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between px-6 py-4">
+                <h2 class="text-lg font-medium text-gray-800">Inventory Information</h2>
+                <!-- Button Row (Right) -->
+                <div class="flex gap-2 mt-4 sm:mt-0">
+                </div>
             </div>
 
             <div class="px-6 py-5 overflow-x-auto">
-                <form action="{{ route('units.update', $unit->id) }}" method="POST"
-                    class="space-y-6 grid grid-cols-3 gap-4" id="unitForm">
+                <form action="{{ route('units.update', $unit) }}" method="POST"
+                    class="space-y-6 grid grid-cols-2 gap-4" id="unitForm">
                     @csrf
                     @method('PUT')
 
                     <!-- Model Name -->
                     <div class="mb-2">
-                        <x-form-label for="model_name">Model Name</x-form-label>
+                        <x-form.label for="model_name">Model Name</x-form.label>
                         <div class="mt-2">
-                            <x-form-input id="model_name" name="model_name" value="{{ $unit['model_name'] }}"
+                            <x-form.input id="model_name" name="model_name" value="{{ $unit['model_name'] }}"
                                 readonly />
-                            <x-form-error name='model_name' />
+                            <x-form.error name='model_name' />
                         </div>
                     </div>
 
                     <!-- Category -->
                     <div class="mb-2">
-                        <x-form-label for="unit_category_id">Category</x-form-label>
+                        <x-form.label for="unit_category_id">Category</x-form.label>
                         <div class="mt-2">
-                            <x-form-input id="cat_id" name="cat_id" value="{{ $unit->unit_category->name ?? '' }}"
+                            <x-form.input id="cat_id" name="cat_id" value="{{ $unit->unit_category->name ?? '' }}"
+                                readonly data-lock />
+                            <x-form.input id="unit_category_id" name="unit_category_id" hidden />
+                            <x-form.error name='serial' />
+                        </div>
+                        <x-form.error name='unit_category_id' value="{{ $unit['unit_category_id'] }}"></x-form.error>
+                    </div>
+
+                    <div class="mb-2">
+                        <x-form.label for="control_no">Control Number</x-form.label>
+                        <div class="mt-2">
+                            <x-form.input id="control_no" name="control_no" value="{{ $unit['control_no'] }}" readonly
+                                data-lock />
+                            <x-form.error name='control_no' />
+                        </div>
+                    </div>
+
+                    <div class="mb-2">
+                        <x-form.label for="serial">Serial</x-form.label>
+                        <div class="mt-2">
+                            <x-form.input id="serial" name="serial" value="{{ $unit['serial'] }}" readonly />
+                            <x-form.error name='serial' />
+                        </div>
+                    </div>
+
+                    <div class="mb-2">
+                        <x-form.label for="purchase_no">Purchase Reference</x-form.label>
+                        <div class="mt-2">
+                            <x-form.input id="purchase_no" name="purchase_no" value="{{ $unit['purchase_no'] }}"
                                 readonly />
-                            <x-form-input id="unit_category_id" name="unit_category_id" hidden />
-                            <x-form-error name='serial' />
-                        </div>
-                        <x-form-error name='unit_category_id' value="{{ $unit['unit_category_id'] }}"></x-form-error>
-                    </div>
-
-                    <div class="mb-2">
-                        <x-form-label for="control_no">Control Number</x-form-label>
-                        <div class="mt-2">
-                            <x-form-input id="control_no" name="control_no" value="{{ $unit['control_no'] }}"
-                                readonly />
-                            <x-form-error name='control_no' />
+                            <x-form.error name='purchase_no' />
                         </div>
                     </div>
 
                     <div class="mb-2">
-                        <x-form-label for="serial">Serial</x-form-label>
+                        <x-form.label for="purchase_date">Purchase Date</x-form.label>
                         <div class="mt-2">
-                            <x-form-input id="serial" name="serial" value="{{ $unit['serial'] }}" readonly />
-                            <x-form-error name='serial' />
-                        </div>
-                    </div>
-
-                    <div class="mb-2">
-                        <x-form-label for="purchase_no">Purchase Reference</x-form-label>
-                        <div class="mt-2">
-                            <x-form-input id="purchase_no" name="purchase_no" value="{{ $unit['purchase_no'] }}"
-                                readonly />
-                            <x-form-error name='purchase_no' />
-                        </div>
-                    </div>
-
-                    <div class="mb-2">
-                        <x-form-label for="purchase_date">Purchase Date</x-form-label>
-                        <div class="mt-2">
-                            <x-form-input type="date" id="purchase_date" name="purchase_date"
+                            <x-form.input type="date" id="purchase_date" name="purchase_date"
                                 value="{{ $unit['purchase_date'] }}" readonly />
-                            <x-form-error name='purchase_date' />
+                            <x-form.error name='purchase_date' />
                         </div>
                     </div>
 
                     <div class="mb-2">
-                        <x-form-label for="manufacturing_date">Manufacturing Date</x-form-label>
+                        <x-form.label for="manufacturing_date">Manufacturing Date</x-form.label>
                         <div class="mt-2">
-                            <x-form-input type="date" id="manufacturing_date" name="manufacturing_date"
+                            <x-form.input type="date" id="manufacturing_date" name="manufacturing_date"
                                 value="{{ $unit['manufacturing_date'] }}" readonly />
-                            <x-form-error name='manufacturing_date' />
+                            <x-form.error name='manufacturing_date' />
                         </div>
                     </div>
 
                     <div class="mb-2">
-                        <x-form-label for="depreciation_date">Depreciation Date</x-form-label>
+                        <x-form.label for="depreciation_date">Depreciation Date</x-form.label>
                         <div class="relative mt-2">
                             <input type="date" id="depreciation_date" name="depreciation_date" readonly
                                 class="w-full pr-8 px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none"
@@ -104,57 +111,71 @@
                                 </div>
                             </div>
                         </div>
-                        <x-form-error name="depreciation_date" />
+                        <x-form.error name="depreciation_date" />
                     </div>
 
                     <div class="mb-2">
-                        <x-form-label for="status">Status</x-form-label>
+                        <x-form.label for="status">Status</x-form.label>
                         <select name="status" id="status"
                             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-focus:ring-green-500 focus:border-green-500 outline-none"
                             required disabled>
                             <option value="">Select Status</option>
                             <option value="ACTIVE" {{ $unit['status'] === 'ACTIVE' ? 'selected' : '' }}>ACTIVE</option>
-                            <option value="INACTIVE" {{ $unit['status'] === 'INACTIVE' ? 'selected' : '' }}>INACTIVE
+                            <option value="DEFECTIVE" {{ $unit['status'] === 'DEFECTIVE' ? 'selected' : '' }}>DEFECTIVE
                             </option>
                             <option value="DISPOSED" {{ $unit['status'] === 'DISPOSED' ? 'selected' : '' }}>DISPOSED
                             </option>
                         </select>
-                        <x-form-error name='status'></x-form-error>
+                        <x-form.error name='status'></x-form.error>
                     </div>
 
-                    <div class="mb-2 col-span-3">
-                        <x-form-label for="remarks">Remarks</x-form-label>
+                    <div class="mb-2">
+                        <x-form.label for="remarks">Remarks</x-form.label>
                         <div class="mt-2">
-                            <x-form-input id="remarks" name="remarks" value="{{ $unit['remarks'] }}" readonly />
-                            <x-form-error name='remarks' />
+                            <x-form.input id="remarks" name="remarks" value="{{ $unit['remarks'] }}" readonly />
+                            <x-form.error name='remarks' />
+                        </div>
+                    </div>
+
+                    <div class="mb-2 hidden" id="unitWeightField">
+                        <x-form.label for="unit_weight">Unit Weight (kg)</x-form.label>
+                        <div class="mt-2">
+                            <x-form.input type="number" id="unit_weight" name="unit_weight" value="{{ $unit['unit_weight'] }}"
+                                readonly />
+                            <x-form.error name='unit_weight' />
+                        </div>
+                    </div>
+
+                    <div class="mb-2 hidden" id="disposedLocationField">
+                        <x-form.label for="disposed_location">Disposed Location</x-form.label>
+                        <div class="mt-2">
+                            <x-form.input id="disposed_location" name="disposed_location"
+                                value="{{ $unit['disposed_location'] }}" readonly />
+                            <x-form.error name='disposed_location' />
                         </div>
                     </div>
 
                     <!-- Form Actions -->
-                    <div class="mt-8 flex items-center justify-end gap-3 pt-6 col-span-3">
+                    <div class="flex items-center justify-end gap-3 pt-6 col-span-2">
                         <!-- Update Info Button -->
-                        <button type="button" id="editButton"
-                            class="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition">
+                        <x-basic.button type="button" id="editButton" variant="success">
                             Update Information
-                        </button>
-
-                        <!-- Cancel Button -->
-                        <button type="button" id="cancelButton"
-                            class="px-4 py-2 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400 transition hidden">
-                            Cancel
-                        </button>
+                        </x-basic.button>
 
                         <!-- Save Changes Button -->
-                        <button type="submit" id="saveButton"
-                            class="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition hidden">
+                        <x-basic.button type="submit" id="saveButton" class="hidden" variant="success">
                             Save Changes
-                        </button>
+                        </x-basic.button>
 
                         <!-- Delete Button -->
-                        <button type="button" id="deleteButton"
-                            class="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition hidden">
+                        <x-basic.button type="button" id="deleteButton" class="hidden" variant="error">
                             Delete
-                        </button>
+                        </x-basic.button>
+
+                        <!-- Cancel Button -->
+                        <x-basic.button type="button" id="cancelButton" class="hidden">
+                            Cancel
+                        </x-basic.button>
                     </div>
 
                 </form>
@@ -162,47 +183,52 @@
         </div>
 
         <div class="bg-white rounded-lg shadow-sm overflow-hidden col-span-3">
-
             <!-- Header -->
-            <div class="px-6 py-5 border-b border-gray-200 flex items-center">
-                <h1 class="text-xl font-semibold text-gray-800">Item Accountability</h1>
-
-                <div class="flex-1"></div>
-
-                @if ($unit['status'] === 'ACTIVE')
-                    <a id="addUserBtn"
-                        class="inline-block px-4 py-2 bg-green-500 text-white rounded-md shadow hover:bg-green-600 transition font-medium ml-2 cursor-pointer">
-                        Add User
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between px-6 py-4">
+                <h2 class="text-lg font-medium text-gray-800">Assigned Accountability</h2>
+                <!-- Button Row (Right) -->
+                <div class="flex gap-2 mt-4 sm:mt-0">
+                    @if ($unit['status'] === 'ACTIVE')
+                        <a id="addUserBtn"
+                            class="bg-green-500 text-white text-xs px-2 py-1 rounded hover:bg-green-600">
+                            Add User
+                        </a>
+                    @endif
+                    <a href="{{ route('accountability.print', ['inventory_id' => $unit->id]) }}" target="_blank"
+                        class="bg-green-500 text-white text-xs px-2 py-1 rounded hover:bg-green-600">
+                        Print Accountability
                     </a>
-                @endif
-
-
-                <a href="{{ route('accountability.print', ['inventory_id' => $unit->id]) }}" target="_blank"
-                    class="inline-block px-4 py-2 bg-green-500 text-white rounded-md shadow hover:bg-green-600 transition font-medium ml-2 cursor-pointer">
-                    Print Accountability
-                </a>
-
-
+                </div>
             </div>
 
-            <!-- Table -->
             <div class="px-6 py-5 overflow-x-auto">
 
-                @foreach ($accountability as $item)
+                @foreach ($accountability as $index => $item)
                     <a href="#"
                         class="block max-w-2xl mx-auto rounded-md shadow-md p-4 flex items-start space-x-4 transform transition duration-300 hover:scale-105 hover:shadow-xl cursor-pointer mb-2"
-                        style="background-color: #00c950;" data-id="{{ $item->id }}"
-                        data-name="{{ $item->name }}" data-department="{{ $item->department }}"
-                        data-location="{{ $item->location }}" data-date-received="{{ $item->date_received }}"
+                        style="
+                            background-color: {{ $index === 0 ? '#00c950' : '#f3f3f3' }};
+                            color: {{ $index === 0 ? 'white' : 'black' }};
+                            border: {{ $index === 0 ? 'none' : '2px solid #00c950' }};
+                        "
+                        data-id="{{ $item->id }}" data-name="{{ $item->name }}"
+                        data-department="{{ $item->department }}" data-location="{{ $item->location }}"
+                        data-date-received="{{ $item->date_received }}"
                         data-date-returned="{{ $item->date_returned }}">
-                        <x-heroicon-s-user class="w-8 h-8 text-white mt-1" />
+
+                        <x-heroicon-s-user
+                            class="w-8 h-8 {{ $index === 0 ? 'text-white' : 'text-green-600' }} mt-1" />
+
                         <div class="flex-1 flex flex-col space-y-1">
-                            <div class="flex items-center space-x-2 text-xs text-white">
+                            <div
+                                class="flex items-center space-x-2 text-xs {{ $index === 0 ? 'text-white' : 'text-green-600' }}">
                                 <span class="font-semibold">{{ $item->name }}</span>
                                 <span>•</span>
-                                <span class="text-white/80">{{ $item->department }}</span>
+                                <span
+                                    class="{{ $index === 0 ? 'text-white/80' : 'text-green-600' }}">{{ $item->department }}</span>
                             </div>
-                            <div class="flex space-x-4 text-white text-xs mt-1">
+                            <div
+                                class="flex space-x-4 text-xs mt-1 {{ $index === 0 ? 'text-white' : 'text-green-600' }}">
                                 <span class="flex items-center space-x-1">
                                     <x-heroicon-s-map-pin class="w-4 h-4" />
                                     <span>{{ $item->location }}</span>
@@ -260,22 +286,22 @@
             <p class="mt-2 text-sm text-gray-600">Fill out the form below to add a new user.</p>
 
             <!-- Form -->
-            <form action="{{ url('/accountability') }}" method="POST" class="mt-4 space-y-3">
+            <form action="{{ route('accountability.store') }}" method="POST" class="mt-4 space-y-3">
                 @csrf
 
                 <input type="text" name="inventory_id" value="{{ $unit['id'] }}" hidden>
 
                 <div class="mb-2">
-                    <x-form-label>Name</x-form-label>
+                    <x-form.label>Name</x-form.label>
                     <div class="mt-2">
-                        <x-form-input id="name" name="name" placeholder="Jane Smith" required />
-                        <x-form-error name='name' />
+                        <x-form.input id="name" name="name" placeholder="Jane Smith" required />
+                        <x-form.error name='name' />
                     </div>
                 </div>
 
                 <!-- Department -->
                 <div class="mb-2">
-                    <x-form-label for="department">Department</x-form-label>
+                    <x-form.label for="department">Department</x-form.label>
                     <select name="department" id="department"
                         class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-focus:ring-green-500 focus:border-green-500 outline-none"
                         required>
@@ -286,30 +312,22 @@
                             </option>
                         @endforeach
                     </select>
-                    <x-form-error name='department'></x-form-error>
+                    <x-form.error name='department'></x-form.error>
                 </div>
 
                 <div class="mb-2">
-                    <x-form-label>Location</x-form-label>
+                    <x-form.label>Location</x-form.label>
                     <div class="mt-2">
-                        <x-form-input id="location" name="location" placeholder="LIIP" required />
-                        <x-form-error name='location' />
+                        <x-form.input id="location" name="location" placeholder="LIIP" required />
+                        <x-form.error name='location' />
                     </div>
                 </div>
 
                 <div class="mb-2">
-                    <x-form-label>Date Received</x-form-label>
+                    <x-form.label>Date Received</x-form.label>
                     <div class="mt-2">
-                        <x-form-input type="date" id="date_received" name="date_received" required />
-                        <x-form-error name='date_received' />
-                    </div>
-                </div>
-
-                <div class="mb-2">
-                    <x-form-label>Date Returned</x-form-label>
-                    <div class="mt-2">
-                        <x-form-input type="date" id="date_returned" name="date_returned" />
-                        <x-form-error name='date_returned' />
+                        <x-form.input type="date" id="date_received" name="date_received" required />
+                        <x-form.error name='date_received' />
                     </div>
                 </div>
 
@@ -344,15 +362,15 @@
                 <input type="hidden" name="inventory_id" value="{{ $unit['id'] }}">
 
                 <div class="mb-2">
-                    <x-form-label>Name</x-form-label>
+                    <x-form.label>Name</x-form.label>
                     <div class="mt-2">
-                        <x-form-input id="update_name" name="name" required />
+                        <x-form.input id="update_name" name="name" required />
                     </div>
                 </div>
 
                 <!-- Department -->
                 <div class="mb-2">
-                    <x-form-label for="update_department">Department</x-form-label>
+                    <x-form.label for="update_department">Department</x-form.label>
                     <select name="department" id="update_department"
                         class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 outline-none"
                         required>
@@ -364,40 +382,91 @@
                 </div>
 
                 <div class="mb-2">
-                    <x-form-label>Location</x-form-label>
+                    <x-form.label>Location</x-form.label>
                     <div class="mt-2">
-                        <x-form-input id="update_location" name="location" required />
+                        <x-form.input id="update_location" name="location" required />
                     </div>
                 </div>
 
                 <div class="mb-2">
-                    <x-form-label>Date Received</x-form-label>
+                    <x-form.label>Date Received</x-form.label>
                     <div class="mt-2">
-                        <x-form-input type="date" id="update_date_received" name="date_received" required />
+                        <x-form.input type="date" id="update_date_received" name="date_received" required />
                     </div>
                 </div>
 
                 <div class="mb-2">
-                    <x-form-label>Date Returned</x-form-label>
+                    <x-form.label>Date Returned</x-form.label>
                     <div class="mt-2">
-                        <x-form-input type="date" id="update_date_returned" name="date_returned" required />
+                        <x-form.input type="date" id="update_date_returned" name="date_returned" required />
                     </div>
                 </div>
 
-                <div class="mt-6 flex justify-end space-x-3">
+                <div class="mt-6 flex justify-between space-x-3">
+                    <!-- Delete Button on the left -->
                     <button type="button"
-                        class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition"
-                        onclick="document.getElementById('updateUserModal').classList.add('hidden')">
-                        Cancel
+                        class="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition"
+                        onclick="openDeleteModal()">
+                        Delete
                     </button>
-                    <button type="submit"
-                        class="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition">
-                        Save
-                    </button>
+
+                    <!-- Cancel & Save Buttons on the right -->
+                    <div class="flex space-x-3">
+                        <button type="button"
+                            class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition"
+                            onclick="document.getElementById('updateUserModal').classList.add('hidden')">
+                            Cancel
+                        </button>
+                        <button type="submit"
+                            class="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition"
+                            form="updateForm">
+                            Save
+                        </button>
+                    </div>
                 </div>
             </form>
         </div>
     </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div id="deleteModal"
+        class="hidden fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm bg-black/30">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-md p-6">
+            <h2 class="text-xl font-semibold text-gray-800">Confirm Delete</h2>
+            <p class="mt-2 text-sm text-gray-600">
+                Are you sure you want to delete this accountability record? This action cannot be undone.
+            </p>
+
+            <div class="mt-6 flex justify-end space-x-3">
+                <button type="button"
+                    class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition"
+                    onclick="document.getElementById('deleteModal').classList.add('hidden')">
+                    Cancel
+                </button>
+
+                <form id="deleteForm" method="POST">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit"
+                        class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition">
+                        Yes, Delete
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openDeleteModal() {
+            const accountabilityId = document.getElementById('update_id').value;
+            const deleteForm = document.getElementById('deleteForm');
+
+            // match your delete route
+            deleteForm.action = `/accountability/${accountabilityId}/destroy`;
+
+            document.getElementById('deleteModal').classList.remove('hidden');
+        }
+    </script>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -408,9 +477,27 @@
             const deleteModal = document.getElementById('delete-modal');
             const form = document.getElementById('unitForm');
 
+            const status = document.getElementById('status');
+            const unitWeightField = document.getElementById('unitWeightField');
+            const disposedLocationField = document.getElementById('disposedLocationField');
+
+            // ✅ STORE INITIAL VALUES
+            const initialValues = {};
+
+            form.querySelectorAll('input, select, textarea').forEach(el => {
+                initialValues[el.name] = el.value;
+            });
+
+            const toggleDisposedFields = () => {
+                const show = status.value === 'DISPOSED';
+                unitWeightField.classList.toggle('hidden', !show);
+                disposedLocationField.classList.toggle('hidden', !show);
+            };
+
             const enableInputs = () => {
                 form.querySelectorAll('input, select, textarea').forEach(el => {
                     if (el.id !== 'unit_category_id') {
+                        if (el.hasAttribute('data-lock')) return;
                         el.removeAttribute('readonly');
                         el.removeAttribute('disabled');
                     }
@@ -427,35 +514,45 @@
                 });
             };
 
-            // When Update Information is clicked
+            // 🟢 EDIT
             editButton.addEventListener('click', function() {
                 enableInputs();
                 editButton.classList.add('hidden');
                 saveButton.classList.remove('hidden');
                 cancelButton.classList.remove('hidden');
-                deleteButton.classList.remove('hidden'); // Show Delete button
+                deleteButton.classList.remove('hidden');
             });
 
-            // When Cancel is clicked
+            // 🔴 CANCEL (FULL RESET)
             cancelButton.addEventListener('click', function() {
+
+                // Restore values
+                form.querySelectorAll('input, select, textarea').forEach(el => {
+                    if (el.name in initialValues) {
+                        el.value = initialValues[el.name];
+                    }
+                });
+
+                // Restore UI
                 disableInputs();
+                toggleDisposedFields();
+
                 cancelButton.classList.add('hidden');
                 saveButton.classList.add('hidden');
-                deleteButton.classList.add('hidden'); // Hide Delete button
+                deleteButton.classList.add('hidden');
                 editButton.classList.remove('hidden');
             });
 
-            // Show Delete Modal on Delete button click
+            // Delete modal
             deleteButton.addEventListener('click', function() {
-                deleteModal.classList.remove('hidden');
+                deleteModal?.classList.remove('hidden');
             });
 
-            // Disable inputs on page load
+            // Initial state
             disableInputs();
+            toggleDisposedFields();
         });
     </script>
-
-
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -590,5 +687,26 @@
             }
         });
     </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const status = document.getElementById('status');
+            const unitWeight = document.getElementById('unitWeightField');
+            const disposedLocation = document.getElementById('disposedLocationField');
+
+            function toggleDisposedFields() {
+                const show = status.value === 'DISPOSED';
+                unitWeight.classList.toggle('hidden', !show);
+                disposedLocation.classList.toggle('hidden', !show);
+            }
+
+            // initial load
+            toggleDisposedFields();
+
+            // when status changes
+            status.addEventListener('change', toggleDisposedFields);
+        });
+    </script>
+
 
 </x-layout>
