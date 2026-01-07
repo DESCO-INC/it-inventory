@@ -398,7 +398,7 @@
                 <div class="mb-2">
                     <x-form.label>Date Returned</x-form.label>
                     <div class="mt-2">
-                        <x-form.input type="date" id="update_date_returned" name="date_returned" required />
+                        <x-form.input type="date" id="update_date_returned" name="date_returned"/>
                     </div>
                 </div>
 
@@ -419,7 +419,7 @@
                         </button>
                         <button type="submit"
                             class="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition"
-                            form="updateForm">
+                            form="updateUserForm">
                             Save
                         </button>
                     </div>
