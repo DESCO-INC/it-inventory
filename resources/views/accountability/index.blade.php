@@ -30,15 +30,15 @@
 
             <x-table.main class="">
                 <thead class="bg-green-600 text-white">
-                    <x-table.th>ID</x-table.th>
-                    <x-table.th>Name</x-table.th>
-                    <x-table.th>Department</x-table.th>
-                    <x-table.th>Location</x-table.th>
-                    <x-table.th>Item Control No.</x-table.th>
-                    <x-table.th>Model Name</x-table.th>
-                    <x-table.th>Date Received</x-table.th>
-                    <x-table.th>Status</x-table.th>
-                    <x-table.th>Action</x-table.th>
+                    <x-table.th class="w-[5%]">ID</x-table.th>
+                    <x-table.th class="w-[15%]">Name</x-table.th>
+                    <x-table.th class="w-[10%]">Department</x-table.th>
+                    <x-table.th class="w-[10%]">Location</x-table.th>
+                    <x-table.th class="w-[10%]">Item Control No.</x-table.th>
+                    <x-table.th class="w-[20%]">Model Name</x-table.th>
+                    <x-table.th class="w-[10%]">Date Received</x-table.th>
+                    <x-table.th class="w-[10%]">Status</x-table.th>
+                    <x-table.th class="w-[10%]">Action</x-table.th>
                 </thead>
                 <tbody>
                     @forelse ($accountability as $acc)

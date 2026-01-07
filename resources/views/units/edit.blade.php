@@ -140,8 +140,8 @@
                     <div class="mb-2 hidden" id="unitWeightField">
                         <x-form.label for="unit_weight">Unit Weight (kg)</x-form.label>
                         <div class="mt-2">
-                            <x-form.input type="number" id="unit_weight" name="unit_weight" value="{{ $unit['unit_weight'] }}"
-                                readonly />
+                            <x-form.input type="number" id="unit_weight" name="unit_weight"
+                                value="{{ $unit['unit_weight'] }}" readonly />
                             <x-form.error name='unit_weight' />
                         </div>
                     </div>
@@ -398,7 +398,7 @@
                 <div class="mb-2">
                     <x-form.label>Date Returned</x-form.label>
                     <div class="mt-2">
-                        <x-form.input type="date" id="update_date_returned" name="date_returned"/>
+                        <x-form.input type="date" id="update_date_returned" name="date_returned" />
                     </div>
                 </div>
 
@@ -666,26 +666,32 @@
         const closeModal = document.getElementById('closeModal');
         const cancelBtn = document.getElementById('cancelBtn');
 
-        // Open modal
-        addUserBtn.addEventListener('click', () => {
-            addUserModal.classList.remove('hidden');
-        });
+        if (addUserBtn && addUserModal) {
+            addUserBtn.addEventListener('click', () => {
+                addUserModal.classList.remove('hidden');
+            });
+        }
 
-        // Close modal
-        closeModal.addEventListener('click', () => {
-            addUserModal.classList.add('hidden');
-        });
-
-        cancelBtn.addEventListener('click', () => {
-            addUserModal.classList.add('hidden');
-        });
-
-        // Close modal when clicking outside the modal content
-        window.addEventListener('click', (e) => {
-            if (e.target === addUserModal) {
+        if (closeModal && addUserModal) {
+            closeModal.addEventListener('click', () => {
                 addUserModal.classList.add('hidden');
-            }
-        });
+            });
+        }
+
+        if (cancelBtn && addUserModal) {
+            cancelBtn.addEventListener('click', () => {
+                addUserModal.classList.add('hidden');
+            });
+        }
+
+        // Optional: close by clicking outside
+        if (addUserModal) {
+            window.addEventListener('click', (e) => {
+                if (e.target === addUserModal) {
+                    addUserModal.classList.add('hidden');
+                }
+            });
+        }
     </script>
 
     <script>

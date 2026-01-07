@@ -84,17 +84,17 @@
 
             <x-table.main class="">
                 <thead class="bg-green-600 text-white">
-                    <x-table.th>ID</x-table.th>
-                    <x-table.th>Control Number</x-table.th>
-                    <x-table.th>Unit</x-table.th>
-                    <x-table.th>Model</x-table.th>
-                    <x-table.th>Serial</x-table.th>
-                    <x-table.th>Purchase Date</x-table.th>
-                    <x-table.th>Depreciation Date</x-table.th>
-                    <x-table.th>Assigned Status</x-table.th>
-                    <x-table.th>Assigned Count</x-table.th>
-                    <x-table.th>Status</x-table.th>
-                    <x-table.th>Action</x-table.th>
+                    <x-table.th class="w-[5%]">ID</x-table.th>
+                    <x-table.th class="w-[10%]">Control Number</x-table.th>
+                    <x-table.th class="w-[7%]">Unit</x-table.th>
+                    <x-table.th class="w-[15%]">Model</x-table.th>
+                    <x-table.th class="w-[10%]">Serial</x-table.th>
+                    <x-table.th class="w-[10%]">Purchase Date</x-table.th>
+                    <x-table.th class="w-[10%]">Depreciation Date</x-table.th>
+                    <x-table.th class="w-[10%]">Assigned Status</x-table.th>
+                    <x-table.th class="w-[5%]">Acc. Count</x-table.th>
+                    <x-table.th class="w-[10%] text-center">Status</x-table.th>
+                    <x-table.th class="w-[8%]">Action</x-table.th>
                 </thead>
                 <tbody>
                     @forelse ($units as $unit)
@@ -115,7 +115,7 @@
                             @endphp
                             <x-table.td>{{ $unit->id }}</x-table.td>
                             <x-table.td>{{ $unit->control_no }}</x-table.td>
-                            <x-table.td>{{ $unit->unit_category->name ?? '-' }}</x-table.td>
+                            <x-table.td>{{ $unit->unit_category->code ?? '-' }}</x-table.td>
                             <x-table.td>{{ $unit->model_name }}</x-table.td>
                             <x-table.td>{{ $unit->serial }}</x-table.td>
                             <x-table.td>{{ $unit->purchase_date }}</x-table.td>
