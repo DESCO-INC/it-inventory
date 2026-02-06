@@ -152,6 +152,13 @@
 
     {{-- JS --}}
     <script>
+        // Pass route placeholders from Blade
+        window.routes = {
+            usersStore: "{{ route('users.store') }}",
+            usersUpdate: "{{ route('users.update', ':id') }}",
+            usersDelete: "{{ route('users.destroy', ':id') }}"
+        };
+
         const userModal = document.getElementById('user-modal');
         const deleteModal = document.getElementById('delete-user-modal');
         const userForm = document.getElementById('user-form');
@@ -161,7 +168,8 @@
 
         function openAddUserModal() {
             modalTitle.textContent = 'Add User';
-            userForm.action = "{{ route('users.store') }}";
+
+            userForm.action = window.routes.usersStore;
             formMethod.value = 'POST';
             userForm.reset();
 
@@ -171,15 +179,18 @@
 
             userModal.classList.remove('hidden');
         }
-
+        
         function openEditUserModal(user) {
             modalTitle.textContent = 'Edit User';
-            userForm.action = `/maintenance/users/${user.id}`;
+
+            // Use named route with placeholder
+            userForm.action = window.routes.usersUpdate.replace(':id', user.id);
             formMethod.value = 'PUT';
 
             document.getElementById('user-name').value = user.name;
             document.getElementById('user-email').value = user.email;
             document.getElementById('user-credential').value = user.credential ?? '';
+            document.getElementById('user-history').value = user.history ?? '';
 
             // Clear password fields for edit
             document.getElementById('user-password').value = '';
@@ -191,20 +202,20 @@
 
             userModal.classList.remove('hidden');
         }
-
-
-
+        
         function closeUserModal() {
             userModal.classList.add('hidden');
         }
-
+        
         function openDeleteUserModal(userId) {
-            deleteForm.action = `/maintenance/users/${userId}`;
+            // Use named route with placeholder
+            deleteForm.action = window.routes.usersDelete.replace(':id', userId);
             deleteModal.classList.remove('hidden');
         }
-
+        
         function closeDeleteUserModal() {
             deleteModal.classList.add('hidden');
         }
     </script>
+
 </x-layout>
