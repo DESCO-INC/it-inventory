@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash; // For password hashing
 use Illuminate\Validation\Rule;
@@ -12,9 +13,16 @@ class MaintenanceController extends Controller
     // Show users with search and pagination
     public function users(Request $request)
     {
-        $query = User::query();
-        $search = $request->input('search', '');
+        // Only allow ADMIN users
+        if (!Auth::check() || Auth::user()->credential !== 'ADMIN') {
+            return redirect()->route('accountability.index')->with('error', 'Access denied: Admins only!');
+        }
 
+        // Base query
+        $query = User::query();
+
+        // Apply search if provided
+        $search = $request->input('search', '');
         if ($search) {
             $query->where(function ($q) use ($search) {
                 $q->where('id', 'like', "%{$search}%")
@@ -23,7 +31,8 @@ class MaintenanceController extends Controller
             });
         }
 
-        $users = $query->orderBy('id', 'desc')->paginate(10)->withQueryString();
+        // Order by ID descending and paginate
+        $users = $query->orderByDesc('id')->paginate(10)->withQueryString();
 
         return view('maintenance.users', compact('users', 'search'));
     }

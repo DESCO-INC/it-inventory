@@ -60,32 +60,11 @@
         <div class="bg-overlay"></div>
     </div>
 
-    @if (session('success'))
-        <div id="toast-success"
-            class="fixed top-4 right-4 z-50 flex items-center w-full max-w-xs p-4 text-gray-500 bg-white rounded-lg shadow-lg border border-green-400"
-            role="alert">
-            <svg class="flex-shrink-0 w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd"
-                    d="M16.707 5.293a1 1 0 01.083 1.32l-.083.094L9 14.414 4.707 10.12a1 1 0 011.32-1.497l.094.083L9 11.586l7.293-7.293a1 1 0 011.414 0z"
-                    clip-rule="evenodd" />
-            </svg>
-            <div class="ml-3 text-sm font-medium text-green-700">
-                {{ session('success') }}
-            </div>
-            <button type="button"
-                class="ml-auto -mx-1.5 -my-1.5 text-gray-400 hover:text-gray-600 rounded-lg focus:ring-2 focus:ring-gray-300 p-1.5 hover:bg-gray-100 inline-flex items-center justify-center h-8 w-8"
-                onclick="document.getElementById('toast-success').remove()">
-                ✖
-            </button>
-        </div>
-
-        <script>
-            setTimeout(() => {
-                const toast = document.getElementById('toast-success');
-                if (toast) toast.remove();
-            }, 4000);
-        </script>
-    @endif
+    @foreach (['success', 'error', 'warning', 'info'] as $msg)
+        @if (session($msg))
+            <x-toast :type="$msg" :message="session($msg)" />
+        @endif
+    @endforeach
 
     <!-- Clean Green Navbar with slight transparency -->
     <nav class="bg-green-500 shadow-md">
@@ -123,9 +102,9 @@
                     @endguest
 
                     @auth
-                        <x-nav-dropdown label="System Maintenance" :items="[
-                            ['label' => 'Manage Users', 'url' => '/maintenance/users'],
-                        ]" />
+                        @if (Auth::user()->credential === 'ADMIN')
+                            <x-nav-dropdown label="System Maintenance" :items="[['label' => 'Manage Users', 'url' => '/maintenance/users']]" />
+                        @endif
 
                         <!-- Profile Dropdown -->
                         <div class="relative">
