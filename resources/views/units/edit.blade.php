@@ -213,8 +213,7 @@
                         "
                         data-id="{{ $item->id }}" data-name="{{ $item->name }}"
                         data-department="{{ $item->department }}" data-location="{{ $item->location }}"
-                        data-history="{{ $item->history }}"
-                        data-date-received="{{ $item->date_received }}"
+                        data-history="{{ $item->history }}" data-date-received="{{ $item->date_received }}"
                         data-date-returned="{{ $item->date_returned }}">
 
                         <x-heroicon-s-user
@@ -243,7 +242,8 @@
                                     <span>Return: {{ $item->date_returned }}</span>
                                 </span>
                             </div>
-                            <div class="flex space-x-4 text-xs mt-1 {{ $index === 0 ? 'text-white' : 'text-green-600' }}">
+                            <div
+                                class="flex space-x-4 text-xs mt-1 {{ $index === 0 ? 'text-white' : 'text-green-600' }}">
                                 <span class="flex items-center space-x-1">
                                     <strong>History :</strong>
                                     <span>{{ $item->history }}</span>
@@ -333,7 +333,8 @@
                 <div class="mb-2">
                     <x-form.label>Repair History</x-form.label>
                     <div class="mt-2">
-                        <x-form.input id="history" name="history" />
+                        <x-form.input id="history" name="history" placeholder="LIIP" required />
+                        <x-form.error name='history' />
                     </div>
                 </div>
 
@@ -479,12 +480,17 @@
     </div>
 
     <script>
+        // Pass route placeholder from Blade
+        window.routes = {
+            accountabilityDelete: "{{ route('accountability.destroy', ':id') }}"
+        };
+
         function openDeleteModal() {
             const accountabilityId = document.getElementById('update_id').value;
             const deleteForm = document.getElementById('deleteForm');
 
-            // match your delete route
-            deleteForm.action = `/accountability/${accountabilityId}/destroy`;
+            // Use Laravel route with placeholder
+            deleteForm.action = window.routes.accountabilityDelete.replace(':id', accountabilityId);
 
             document.getElementById('deleteModal').classList.remove('hidden');
         }
