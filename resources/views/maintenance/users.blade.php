@@ -190,7 +190,6 @@
             document.getElementById('user-name').value = user.name;
             document.getElementById('user-email').value = user.email;
             document.getElementById('user-credential').value = user.credential ?? '';
-            document.getElementById('user-history').value = user.history ?? '';
 
             // Clear password fields for edit
             document.getElementById('user-password').value = '';
