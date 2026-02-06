@@ -213,6 +213,7 @@
                         "
                         data-id="{{ $item->id }}" data-name="{{ $item->name }}"
                         data-department="{{ $item->department }}" data-location="{{ $item->location }}"
+                        data-history="{{ $item->history }}"
                         data-date-received="{{ $item->date_received }}"
                         data-date-returned="{{ $item->date_returned }}">
 
@@ -240,6 +241,12 @@
                                 <span class="flex items-center space-x-1">
                                     <x-heroicon-s-calendar class="w-4 h-4" />
                                     <span>Return: {{ $item->date_returned }}</span>
+                                </span>
+                            </div>
+                            <div class="flex space-x-4 text-xs mt-1 {{ $index === 0 ? 'text-white' : 'text-green-600' }}">
+                                <span class="flex items-center space-x-1">
+                                    <strong>History :</strong>
+                                    <span>{{ $item->history }}</span>
                                 </span>
                             </div>
                         </div>
@@ -324,6 +331,13 @@
                 </div>
 
                 <div class="mb-2">
+                    <x-form.label>Repair History</x-form.label>
+                    <div class="mt-2">
+                        <x-form.input id="history" name="history" />
+                    </div>
+                </div>
+
+                <div class="mb-2">
                     <x-form.label>Date Received</x-form.label>
                     <div class="mt-2">
                         <x-form.input type="date" id="date_received" name="date_received" required />
@@ -387,6 +401,14 @@
                         <x-form.input id="update_location" name="location" required />
                     </div>
                 </div>
+
+                <div class="mb-2">
+                    <x-form.label>Repair History</x-form.label>
+                    <div class="mt-2">
+                        <x-form.input id="update_history" name="history" />
+                    </div>
+                </div>
+
 
                 <div class="mb-2">
                     <x-form.label>Date Received</x-form.label>
@@ -568,6 +590,7 @@
                     const name = this.dataset.name;
                     const department = this.dataset.department;
                     const location = this.dataset.location;
+                    const history = this.dataset.history;
                     const dateReceived = this.dataset.dateReceived;
                     const dateReturned = this.dataset.dateReturned;
 
@@ -576,6 +599,7 @@
                     document.getElementById('update_name').value = name;
                     document.getElementById('update_department').value = department;
                     document.getElementById('update_location').value = location;
+                    document.getElementById('update_history').value = history;
                     document.getElementById('update_date_received').value = dateReceived;
                     document.getElementById('update_date_returned').value = dateReturned;
 

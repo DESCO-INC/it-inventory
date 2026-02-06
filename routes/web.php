@@ -43,4 +43,8 @@ Route::prefix('accountability')->middleware(['auth'])->controller(Accountability
 
 Route::prefix('maintenance')->middleware(['auth'])->controller(MaintenanceController::class)->group(function () {
     Route::get('/reports', 'reports')->name('maintenance.reports');
+    Route::get('/users', 'users')->name('maintenance.users');
+    Route::post('/users', 'store')->name('users.store');
+    Route::put('/users/{id}', 'update')->name('users.update');
+    Route::delete('/users/{id}', 'destroy')->name('users.destroy');
 });

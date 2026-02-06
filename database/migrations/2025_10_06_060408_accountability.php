@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('name')->nullable();
             $table->string('department')->nullable();
             $table->string('location')->nullable();
+            $table->string('history')->nullable();
             $table->string('date_received')->nullable();
             $table->string('date_returned')->nullable();
             $table->string('returned_to')->nullable();

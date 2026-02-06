@@ -74,6 +74,7 @@ class AccountabilityController extends Controller
             'name' => 'required',
             'department' => 'required',
             'location' => 'required',
+            'history' => 'nullable',
             'date_received' => 'required',
         ]);
 

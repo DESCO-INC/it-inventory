@@ -120,18 +120,12 @@
                             class="text-white hover:text-green-100 transition mx-5 {{ request()->is('/') ? 'font-semibold' : '' }}">
                             Login
                         </a>
-                        <a href="{{ url('/register') }}"
-                            class="text-white hover:text-green-100 transition mx-5 {{ request()->is('/register') ? 'font-semibold' : '' }}">
-                            Register
-                        </a>
                     @endguest
 
                     @auth
-                        {{-- <x-nav-dropdown label="System Maintenance" :items="[
-                            ['label' => 'Reports', 'url' => '/maintenance/reports'],
+                        <x-nav-dropdown label="System Maintenance" :items="[
                             ['label' => 'Manage Users', 'url' => '/maintenance/users'],
-                            ['label' => 'Audit Trail ', 'url' => '/maintenance/settings'],
-                        ]" /> --}}
+                        ]" />
 
                         <!-- Profile Dropdown -->
                         <div class="relative">
@@ -213,9 +207,6 @@
                 @guest
                     <a href="{{ url('/') }}" class="block px-3 py-2 text-white hover:bg-green-700 rounded-md">
                         Login
-                    </a>
-                    <a href="{{ url('/register') }}" class="block px-3 py-2 text-white hover:bg-green-700 rounded-md">
-                        Register
                     </a>
                 @endguest
             </div>
