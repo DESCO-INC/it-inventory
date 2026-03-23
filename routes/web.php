@@ -6,6 +6,8 @@ use App\Http\Controllers\RegisterUserController;
 use App\Http\Controllers\UnitController;
 use App\Http\Controllers\AccountabilityController;
 use App\Http\Controllers\MaintenanceController;
+use App\Http\Controllers\SoftwareController;
+use App\Http\Controllers\InventorySoftwareController;
 
 
 // Auth
@@ -16,6 +18,11 @@ Route::post('/logout', [SessionController::class, 'destroy']);
 Route::get('/register', [RegisterUserController::class, 'index']);
 Route::post('/register', [RegisterUserController::class, 'store']);
 
+// Software
+Route::resource('software', SoftwareController::class)->except(['show'])->middleware('auth');
+
+// SoftwareInventory
+Route::resource('inventory_software', InventorySoftwareController::class)->except(['show'])->middleware('auth');
 
 Route::prefix('units')->middleware(['auth'])->controller(UnitController::class)->group(function () {
     Route::get('/', 'index')->name('units.index');

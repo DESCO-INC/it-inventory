@@ -4,218 +4,56 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <title>{{ config('app.name', 'Laravel') }}</title>
     <link rel="icon" href="{{ asset('images/icon.png') }}" type="image/png">
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
 
-    <!-- Vite -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-
-    <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-        }
-
-        /* Background Image with Blur and Gradient Overlay */
-        .bg-wrapper {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-        }
-
-        .bg-image {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image: url('{{ asset('images/background.jpg') }}');
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            filter: blur(3px);
-        }
-
-        .bg-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, rgba(34, 197, 94, 0.75) 0%, rgba(16, 185, 129, 0.65) 50%, rgba(5, 150, 105, 0.75) 100%);
-        }
-    </style>
+    <script src="{{ asset('js/jquery-3.6.0.min.js') }}"></script>
 </head>
 
-<body class="min-h-screen">
-    <!-- Background Image with Effects -->
-    <div class="bg-wrapper">
-        <div class="bg-image"></div>
-        <div class="bg-overlay"></div>
+<body class="relative min-h-screen overflow-hidden">
+
+    {{-- Background Image --}}
+    <div class="fixed inset-0 -z-20">
+        <div class="absolute inset-0 bg-cover bg-center bg-no-repeat blur-sm scale-105"
+            style="background-image: url('{{ asset('images/background.jpg') }}');">
+        </div>
     </div>
 
-    @foreach (['success', 'error', 'warning', 'info'] as $msg)
-        @if (session($msg))
-            <x-toast :type="$msg" :message="session($msg)" />
-        @endif
-    @endforeach
+    {{-- Gradient Overlay --}}
+    <div
+        class="fixed inset-0 -z-10 bg-gradient-to-br 
+        from-[rgba(34,197,94,0.75)] 
+        via-[rgba(16,185,129,0.65)] 
+        to-[rgba(5,150,105,0.75)]">
+    </div>
 
-    <!-- Clean Green Navbar with slight transparency -->
-    <nav class="bg-green-500 shadow-md">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-center items-center h-16">
+    <div class="flex h-screen overflow-hidden relative z-10">
+        {{-- Sidebar --}}
+        @auth
+            <x-layout.sidebar />
+        @endauth
 
-                <!-- Left Section (Logo + Nav Links) -->
-                <div class="flex items-center space-x-8">
-                    <!-- Logo -->
-                    <h1 class="text-2xl font-bold text-white">IT Inventory</h1>
+        <!-- ================= Main Area ================= -->
+        <div class="flex-1 flex flex-col">
+            {{-- Top Bar --}}
+            @auth
+                <x-layout.navbar />
+            @endauth
 
-                    <!-- Nav Links -->
-                    <div class="flex items-center space-x-6 ml-8">
-                        @auth
-                            @if (Auth::user()->credential === 'ADMIN')
-                                <x-nav-link href="{{ route('units.index') }}" :active="request()->routeIs('units.index')">
-                                    Inventory List
-                                </x-nav-link>
-                            @endif
-                            <x-nav-link href="{{ route('accountability.index') }}" :active="request()->routeIs('accountability.index')">
-                                Accountability List
-                            </x-nav-link>
-                        @endauth
-                    </div>
-
-                </div>
-
-                <!-- Right Section -->
-                <div class="hidden md:flex items-center ml-auto space-x-4">
-                    @guest
-                        <a href="{{ url('/') }}"
-                            class="text-white hover:text-green-100 transition mx-5 {{ request()->is('/') ? 'font-semibold' : '' }}">
-                            Login
-                        </a>
-                    @endguest
-
-                    @auth
-                        @if (Auth::user()->credential === 'ADMIN')
-                            <x-nav-dropdown label="System Maintenance" :items="[['label' => 'Manage Users', 'url' => '/maintenance/users']]" />
-                        @endif
-
-                        <!-- Profile Dropdown -->
-                        <div class="relative">
-                            <!-- Profile Button -->
-                            <button type="button" id="profileDropdownButton"
-                                class="flex items-center gap-2 px-4 py-2 bg-white text-green-600 rounded-md hover:bg-green-50 transition font-medium">
-                                <!-- Avatar -->
-                                <div
-                                    class="w-6 h-6 rounded-full bg-green-600 text-white flex items-center justify-center font-semibold text-[10px] uppercase">
-                                    {{ substr(Auth::user()->name, 0, 1) }}
-                                </div>
-
-                                <!-- User Name -->
-                                <span class="text-sm">{{ Auth::user()->name }}</span>
-                            </button>
-
-                            <!-- Dropdown Menu (same width, right-aligned, below button) -->
-                            <div id="profileDropdownMenu"
-                                class="hidden absolute top-full right-0 mt-2 w-full bg-white border border-gray-200 rounded-md shadow-lg overflow-hidden z-50">
-
-                                <button type="button"
-                                    class="w-full text-right px-4 py-2 text-sm text-gray-700 hover:bg-red-50 hover:text-red-600"
-                                    onclick="document.getElementById('logout-modal').classList.remove('hidden')">
-                                    Logout
-                                </button>
-                            </div>
-                        </div>
-
-                        <!-- Logout Modal -->
-                        <div id="logout-modal"
-                            class="hidden fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm bg-black/30">
-                            <div class="bg-white rounded-lg shadow-xl w-full max-w-md p-6">
-                                <h2 class="text-xl font-semibold text-gray-800">Confirm Logout</h2>
-                                <p class="mt-2 text-sm text-gray-600">Are you sure you want to log out?</p>
-
-                                <div class="mt-6 flex justify-end space-x-3">
-                                    <button type="button"
-                                        class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition"
-                                        onclick="document.getElementById('logout-modal').classList.add('hidden')">
-                                        Cancel
-                                    </button>
-
-                                    <form method="POST" action="{{ url('/logout') }}">
-                                        @csrf
-                                        <button type="submit"
-                                            class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition">
-                                            Log out
-                                        </button>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                    @endauth
-                </div>
-
-                <!-- Mobile menu button -->
-                <div class="md:hidden">
-                    <button type="button" onclick="document.getElementById('mobile-menu').classList.toggle('hidden')"
-                        class="text-white hover:text-green-100 focus:outline-none p-2">
-                        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M4 6h16M4 12h16M4 18h16" />
-                        </svg>
-                    </button>
-                </div>
-            </div>
+            <!-- Scrollable Content -->
+            <main class="flex-1 overflow-y-auto p-6">
+                {{ $slot }}
+            </main>
         </div>
 
-        <!-- Mobile menu -->
-        <div id="mobile-menu" class="hidden md:hidden bg-green-600/95 backdrop-blur-sm">
-            <div class="px-2 pt-2 pb-3 space-y-1">
-                @auth
-                    <a href="{{ url('/') }}"
-                        class="block px-3 py-2 text-white hover:bg-green-700 rounded-md {{ request()->is('/') ? 'bg-green-700' : '' }}">
-                        Home
-                    </a>
-                @endauth
+        {{-- Toast Notification --}}
+        <x-layout.toast />
+    </div>
 
-                @guest
-                    <a href="{{ url('/') }}" class="block px-3 py-2 text-white hover:bg-green-700 rounded-md">
-                        Login
-                    </a>
-                @endguest
-            </div>
-        </div>
-    </nav>
-
-    <!-- Main Content -->
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {{ $slot }}
-    </main>
+    @stack('scripts')
 </body>
-
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-        const btn = document.getElementById('profileDropdownButton');
-        const menu = document.getElementById('profileDropdownMenu');
-
-        btn.addEventListener('click', function(e) {
-            e.stopPropagation();
-            menu.classList.toggle('hidden');
-        });
-
-        // Close dropdown if clicking outside
-        document.addEventListener('click', function(e) {
-            if (!btn.contains(e.target) && !menu.contains(e.target)) {
-                menu.classList.add('hidden');
-            }
-        });
-    });
-</script>
-
 
 </html>

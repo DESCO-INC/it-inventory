@@ -11,6 +11,9 @@ use App\Models\Inventory;
 use App\Models\UnitCategory;
 use App\Models\Accountability;
 use App\Models\Department;
+use App\Models\InventorySoftware;
+use App\Models\Software;
+
 use App\Imports\InventoryImport;
 
 class UnitController extends Controller
@@ -96,9 +99,11 @@ class UnitController extends Controller
     {
         $category = UnitCategory::get();
         $accountability = Accountability::where('inventory_id', $unit->id)->orderByDesc('id')->get();
-        $department = Department::get();
+        $department = Department::pluck('department');
+        $softwareLists = Software::get();
+        $software = InventorySoftware::with('software')->where('inventory_id', $unit->id)->get();
 
-        return view('units.edit', compact('unit', 'category', 'accountability', 'department'));
+        return view('units.edit', compact('unit', 'category', 'accountability', 'department', 'software', 'softwareLists'));
     }
 
     public function update(Request $request, Inventory $unit)

@@ -1,0 +1,23 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class InventorySoftware extends Model
+{
+    use HasFactory;
+    protected $table = 'inventory_software';
+    protected $guarded = [];
+
+    public function inventory()
+    {
+        return $this->belongsTo(Inventory::class);
+    }
+
+    public function software()
+    {
+        return $this->belongsTo(Software::class);
+    }
+}

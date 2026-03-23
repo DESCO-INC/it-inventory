@@ -1,39 +1,31 @@
-<x-layout >
-    <div class="space-y-4 mb-6">
-        <div class="flex justify-center py-10">
-            <div class="relative flex flex-col my-6 bg-white shadow-xl border border-slate-200 rounded-lg w-96">
-                <div class="p-4">
-                <h6 class="mb-5 text-slate-500 text-xl font-semibold">
-                    Welcome to IT Inventory System
-                </h6>
+<x-layout>
+    <div class="w-full h-full flex justify-center items-center">
+
+        <div class="relative flex flex-col my-6 bg-white shadow-xl border border-slate-200 rounded-lg w-96">
+            <div class="p-4">
+                <div class="flex flex-col items-center">
+                    <p class="text-3xl font-bold text-green-500">{{ config('app.name', 'Laravel') }}</p>
+                    <p class="text-lg font-bold text-green-500 mb-5">DESCO</p>
+                </div>
                 <form method="POST" action="{{ url('/login') }}">
-                @csrf
-                <div class="mb-2">
-                    <x-form.label>Email</x-form.label>
-                    <div class="mt-2">
-                        <x-form.input  id="email" name="email" placeholder="JaneSmith@gmail.com" required />
-                        <x-form.error name='email'/>
+                    @csrf
+                    <div class="mb-2">
+                        <x-input label="Email" type="email" name="email" value="{{ old('email') }}"
+                            placeholder="Enter your email" class="w-full" />
                     </div>
-                </div>
 
-                <div class="mb-2">
-                    <x-form.label>Password</x-form.label>
-                    <div class="mt-2">
-                        <x-form.input  type="password" id="password" name="password" required/>
-                        <x-form.error name='password'/>
+                    <div class="mb-2">
+                        <x-input label="Password" type="password" name="password" placeholder="Enter your password"
+                            class="w-full" />
                     </div>
-                </div>
 
-                </div>
-                <div class="px-4 pb-4 pt-0">
-                <button
-                    class="w-full rounded-md bg-green-500 py-2 px-4 border border-transparent text-center text-sm text-white transition-all shadow-md hover:shadow-lg focus:bg-slate-700 focus:shadow-none active:bg-slate-700 hover:bg-slate-700 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
-                    type="submit"
-                >
+            </div>
+            
+            <div class="px-4 pb-4 pt-0">
+                <x-button type="submit" class="w-full">
                     Login
-                </button>
+                </x-button>
                 </form>
-                </div>
             </div>
         </div>
     </div>

@@ -9,3 +9,15 @@
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
 }
+
+@layer base {
+    :root {
+        --color-primary: #00c950;
+        --color-secondary: #FFFFFF;
+        --color-accent: #00a63e;
+        
+        --color-primary-hover: #02a242;
+        --color-secondary-hover: #b7b6b6;
+        --color-accent-hover: #018933;
+    }
+}
