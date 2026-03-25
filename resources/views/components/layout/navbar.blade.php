@@ -1,6 +1,5 @@
 {{-- Top Bar --}}
-<header
-    class="h-16 bg-[var(--color-secondary)] backdrop-blur border-b border-gray-200 flex items-center justify-between px-6 shadow-lg">
+<header class="relative z-50 h-16 bg-[var(--color-secondary)] backdrop-blur border-b border-gray-200 flex items-center justify-between px-6 shadow-lg">
 
     <h1 class="text-lg font-semibold text-[var(--color-primary)]">
         {{ config('app.name') }}
@@ -20,12 +19,7 @@
             </button>
 
             <div id="profileDropdownMenu"
-                class="hidden absolute right-0 mt-2 w-40 bg-white rounded-md shadow-lg border border-gray-200 overflow-hidden z-50">
-
-                {{-- <a href="{{ route('maintenance.profile') }}"
-                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 text-right">
-                    Profile
-                </a> --}}
+                class="hidden absolute right-0 mt-2 w-40 bg-white rounded-md shadow-lg border border-gray-200 overflow-hidden">
 
                 <a href="#"
                     class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 text-right">

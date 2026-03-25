@@ -30,7 +30,7 @@
         to-[rgba(5,150,105,0.75)]">
     </div>
 
-    <div class="flex h-screen overflow-hidden relative z-10">
+    <div class="flex h-screen relative">
         {{-- Sidebar --}}
         @auth
             <x-layout.sidebar />

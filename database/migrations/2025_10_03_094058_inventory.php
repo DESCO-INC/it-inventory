@@ -23,8 +23,11 @@ return new class extends Migration
             $table->string('depreciation_date')->nullable();
             $table->string('remarks')->nullable();
             $table->string('status');
+            $table->string('unit_weight')->nullable();
+            $table->string('disposed_location')->nullable();
             $table->string('created_by')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

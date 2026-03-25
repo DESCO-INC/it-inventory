@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
+use Illuminate\Database\QueryException;
 
 use App\Models\InventorySoftware;
 
@@ -12,20 +13,25 @@ class InventorySoftwareController extends Controller
 {
     public function store(Request $request)
     {
-        // Validate form fields
         $validated = $request->validate([
             'inventory_id' => 'required',
             'software_id' => 'required',
             'product_key' => 'nullable',
-            'installed_at' => 'required|date',
+            'date_installed' => 'required|date',
+            'date_expired' => 'nullable|date',
         ]);
 
-        // Add created_by using logged-in user name
         $validated['installed_by'] = Auth::user()->name ?? 'System';
-        $validated = array_map('strtoupper', $validated);
+        if (!empty($validated['product_key'])) {
+            $validated['product_key'] = strtoupper($validated['product_key']);
+        }
 
-        $inventorySoftware = InventorySoftware::create($validated);
-        return back()->with('success', 'Application added successfully!');
+        try {
+            InventorySoftware::create($validated);
+            return back()->with('success', 'Application added successfully!');
+        } catch (Exception $e) {
+            return back()->with('error', 'Error Occured When Adding a Software.');
+        }
     }
 
     public function update(Request $request, $id)
@@ -33,16 +39,10 @@ class InventorySoftwareController extends Controller
         $software = InventorySoftware::findOrFail($id);
 
         $validated = $request->validate([
-            'software_id' => [
-                'required',
-                Rule::unique('inventory_software')
-                    ->where(function ($query) use ($software) {
-                        return $query->where('inventory_id', $software->inventory_id);
-                    })
-                    ->ignore($software->id),
-            ],
+            'software_id' => 'required',
             'product_key' => 'nullable',
-            'installed_at' => 'required|date',
+            'date_installed' => 'required|date',
+            'date_expired' => 'nullable|date',
         ]);
 
         $validated = array_map('strtoupper', $validated);

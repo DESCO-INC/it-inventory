@@ -16,10 +16,11 @@ return new class extends Migration
             $table->foreignIdFor(\App\Models\Inventory::class)->constrained()->cascadeOnDelete();
             $table->foreignIdFor(\App\Models\Software::class)->constrained()->cascadeOnDelete();
             $table->string('product_key')->nullable();
-            $table->date('installed_at')->nullable();
+            $table->date('date_installed')->nullable();
+            $table->date('date_expired')->nullable();
             $table->string('installed_by')->nullable();
             $table->timestamps();
-            $table->unique(['inventory_id', 'software_id']);
+            $table->softDeletes();
         });
     }
 

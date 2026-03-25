@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+
 use App\Models\Accountability;
 use App\Models\Inventory;
 
@@ -12,18 +15,9 @@ class AccountabilityController extends Controller
     public function index(Request $request)
     {
         $search = $request->input('search');
-        $department = $request->input('department');
-
-        // 🔹 Get UNIQUE departments for the select
-        $departments = Accountability::query()->whereNotNull('department')->distinct()->orderBy('department')->pluck('department', 'department'); // ['IT' => 'IT']
-
         $accountability = Accountability::with('inventory')
             ->whereIn('id', function ($sub) {
                 $sub->selectRaw('MAX(id)')->from('accountability')->groupBy('inventory_id');
-            })
-            // 🔹 filter by department
-            ->when($department, function ($q) use ($department) {
-                $q->where('department', $department);
             })
             // 🔹 existing search
             ->when($search, function ($q) use ($search) {
@@ -44,7 +38,9 @@ class AccountabilityController extends Controller
             ->paginate(10)
             ->withQueryString(); // 🔹 keep filters on pagination
 
-        return view('accountability.index', compact('accountability', 'search', 'departments', 'department'));
+        $departments = Accountability::query()->whereNotNull('department')->distinct()->orderBy('department')->pluck('department', 'department');
+        $locations = Accountability::query()->whereNotNull('location')->distinct()->orderBy('location')->pluck('location', 'location');
+        return view('accountability.index', compact('accountability', 'search', 'departments', 'locations'));
     }
 
     public function print(Request $request)
@@ -88,11 +84,7 @@ class AccountabilityController extends Controller
     public function update(Request $request, $id)
     {
         $account = Accountability::findOrFail($id);
-
-        // Store the original date_returned before updating
         $originalDateReturned = $account->date_returned;
-
-        // Update fields from request
         $account->fill($request->all());
 
         // Check if date_returned was changed
@@ -104,7 +96,7 @@ class AccountabilityController extends Controller
 
         return redirect()->back()->with('success', 'Accountability updated successfully.');
     }
-    
+
     public function destroy($id)
     {
         $accountability = Accountability::findOrFail($id);
@@ -119,5 +111,68 @@ class AccountabilityController extends Controller
             // redirect to the unit edit page even if delete fails
             return redirect()->route('units.edit', $accountability->inventory_id)->with('error', 'Failed to delete accountability. Please try again.');
         }
+    }
+
+    public function export(Request $request)
+    {
+        // Validate inputs
+        $request->validate([
+            'date_from' => 'required|date',
+            'date_to' => 'required|date|after_or_equal:date_from',
+        ]);
+
+        $units = Accountability::with('inventory')
+            ->whereBetween('created_at', [$request->date_from . ' 00:00:00', $request->date_to . ' 23:59:59'])
+            ->when($request->department, function ($query) use ($request) {
+                $query->where('department', $request->department);
+            })
+            ->when($request->location, function ($query) use ($request) {
+                $query->where('location', $request->location);
+            })->get();
+
+        // Create spreadsheet
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+
+        // Headers
+        $sheet->setCellValue('A1', 'Control Number');
+        $sheet->setCellValue('B1', 'Model Name');
+        $sheet->setCellValue('C1', 'Serial No.');
+        $sheet->setCellValue('D1', 'Purchase Ref.');
+        $sheet->setCellValue('E1', 'Purchased Date');
+        $sheet->setCellValue('F1', 'Assigned To');
+        $sheet->setCellValue('G1', 'Location');
+        $sheet->setCellValue('H1', 'Date Received');
+        $sheet->setCellValue('I1', 'Date Returned');
+        $sheet->setCellValue('J1', 'Remarks');
+
+        // Data
+        $row = 2;
+        foreach ($units as $unit) {
+            $sheet->setCellValue('A' . $row, $unit->inventory->control_no);
+            $sheet->setCellValue('B' . $row, $unit->inventory->model_name);
+            $sheet->setCellValue('C' . $row, $unit->inventory->serial);
+            $sheet->setCellValue('D' . $row, $unit->inventory->purchase_no);
+            $sheet->setCellValue('E' . $row, $unit->inventory->purchase_date);
+            $sheet->setCellValue('F' . $row, $unit->name);
+            $sheet->setCellValue('G' . $row, $unit->location);
+            $sheet->setCellValue('H' . $row, $unit->date_received);
+            $sheet->setCellValue('I' . $row, $unit->date_return);
+            $sheet->setCellValue('J' . $row, $unit->inventory->remarks);
+            $row++;
+        }
+
+        // Styling
+        $sheet->getStyle('A1:J1')->getFont()->setBold(true);
+
+        foreach (range('A', 'J') as $col) {
+            $sheet->getColumnDimension($col)->setAutoSize(true);
+        }
+
+        // Download
+        return response()->streamDownload(function () use ($spreadsheet) {
+            $writer = new Xlsx($spreadsheet);
+            $writer->save('php://output');
+        }, 'accountability.xlsx');
     }
 }

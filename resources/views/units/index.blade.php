@@ -79,9 +79,9 @@
 
     <x-card class="mb-2">
         <div class="overflow-x-auto">
-            <form method="GET" class="mb-4 flex items-center gap-2">
-                <x-basic.input type="text" name="search" value="{{ $search }}" placeholder="Search" />
-                <x-basic.button variant="success">Search</x-basic.button>
+            <form method="GET" class="mb-4 flex items-center gap-2 w-[300px]">
+                <x-input name="search" size="sm" value="{{ $search }}" placeholder="Search" />
+                <x-button size="sm" type="submit" variant="success">Search</x-button>
             </form>
 
             <div class="overflow-x-auto border border-gray-200 rounded">

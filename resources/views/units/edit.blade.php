@@ -125,12 +125,8 @@
             <!-- Scrollable list -->
             <div class="flex-1 overflow-y-auto pr-1">
                 @foreach ($accountability as $index => $item)
-                    <button type="button"
-                        class="btn_updateUser block w-full text-left rounded-md shadow-sm p-3 flex items-start space-x-3 hover:shadow-md cursor-pointer mb-2 {{ $index === 0 ? 'bg-[#00c950] text-white border-none' : 'bg-[#f3f3f3] text-black border-[1.5px] border-[#00c950]' }}"
-                        data-id="{{ $item->id }}" data-name="{{ $item->name }}"
-                        data-department="{{ $item->department }}" data-location="{{ $item->location }}"
-                        data-history="{{ $item->history }}" data-date-received="{{ $item->date_received }}"
-                        data-date-returned="{{ $item->date_returned }}">
+                    <button type="button" onclick='Edit_User_Modal(@json($item))'
+                        class="block w-full text-left rounded-md shadow-sm p-3 flex items-start space-x-3 hover:shadow-md cursor-pointer mb-2 {{ $index === 0 ? 'bg-[#00c950] text-white border-none' : 'bg-[#f3f3f3] text-black border-[1.5px] border-[#00c950]' }}">
 
                         <x-heroicon-s-user
                             class="w-6 h-6 {{ $index === 0 ? 'text-white' : 'text-green-600' }} mt-0.5" />
@@ -179,6 +175,7 @@
                         <tr>
                             <th class="px-4 py-2 text-left text-sm font-medium">Software</th>
                             <th class="px-4 py-2 text-left text-sm font-medium">Date Installed</th>
+                            <th class="px-4 py-2 text-left text-sm font-medium">Date Expiration</th>
                             <th class="px-4 py-2 text-left text-sm font-medium">Installed By</th>
                             <th class="px-4 py-2 text-center text-sm font-medium w-15">Options</th>
                         </tr>
@@ -188,13 +185,11 @@
                         @forelse($software as $soft)
                             <tr>
                                 <td class="px-4 py-3 text-xs text-gray-800">{{ $soft->software->name }}</td>
-                                <td class="px-4 py-3 text-xs text-gray-800">{{ $soft->installed_at }}</td>
+                                <td class="px-4 py-3 text-xs text-gray-800">{{ $soft->date_installed }}</td>
+                                <td class="px-4 py-3 text-xs text-gray-800">{{ $soft->date_expired }}</td>
                                 <td class="px-4 py-3 text-xs text-gray-800">{{ $soft->installed_by }}</td>
                                 <td class="px-4 py-2 text-center flex justify-center gap-1">
-                                    <x-button size="xs" variant="info" class="btn_updateApp"
-                                        data-id="{{ $soft->id }}" data-software_id="{{ $soft->software->id }}"
-                                        data-product_key="{{ $soft->product_key }}"
-                                        data-installed_at="{{ $soft->installed_at }}">
+                                    <x-button size="xs" variant="info" class="btn_updateApp" onclick="Edit_App_Modal({{ $soft }})">
                                         Manage
                                     </x-button>
                                 </td>
@@ -287,15 +282,15 @@
         </div>
     </div>
 
-    <!-- Update User Modal -->
-    <div id="updateUser_modal"
+    <!-- EDIT User Modal -->
+    <div id="userEdit_modal"
         class="hidden fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm bg-black/30">
         <div class="bg-white rounded-lg shadow-xl w-full max-w-md p-6">
             <h2 class="text-xl font-semibold text-gray-800">Update User</h2>
             <p class="mt-2 text-sm text-gray-600">Modify the details below.</p>
 
             <!-- Form -->
-            <form id="updateUser_form" method="POST" class="mt-4 space-y-3">
+            <form id="userEdit_form" method="POST" class="mt-4 space-y-3">
                 @csrf
                 @method('PUT')
 
@@ -334,13 +329,14 @@
 
                 <div class="mt-6 flex justify-between space-x-3">
                     <!-- Delete Button on the left -->
-                    <x-button variant="error" id="btn_deleteUser" class="h-10">
+                    <x-button type="button" variant="error" onclick="Delete_User_Modal($('#update_id').val())"
+                        class="h-10">
                         Delete
                     </x-button>
 
                     <!-- Cancel & Save Buttons on the right -->
                     <div class="flex space-x-3">
-                        <x-button variant="gray" onclick="toggleModal('updateUser_modal')" class="h-10">
+                        <x-button variant="gray" onclick="toggleModal('userEdit_modal')" class="h-10">
                             Cancel
                         </x-button>
                         <x-button type="submit" class="h-10">
@@ -353,7 +349,7 @@
     </div>
 
     <!-- Delete Confirmation Modal -->
-    <div id="deleteUser_modal"
+    <div id="userDelete_modal"
         class="hidden fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm bg-black/30">
         <div class="bg-white rounded-lg shadow-xl w-full max-w-md p-6">
             <h2 class="text-xl font-semibold text-gray-800">Confirm Delete</h2>
@@ -364,11 +360,11 @@
             <div class="mt-6 flex justify-end space-x-3">
                 <button type="button"
                     class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition"
-                    onclick="document.getElementById('deleteModal').classList.add('hidden')">
+                    onclick="toggleModal('userDelete_modal')">
                     Cancel
                 </button>
 
-                <form id="deleteUser_form" method="POST">
+                <form id="userDelete_form" method="POST">
                     @csrf
                     @method('DELETE')
                     <button type="submit"
@@ -403,7 +399,12 @@
                 </div>
 
                 <div class="mb-2">
-                    <x-input label="Installation Date" type="date" name="installed_at" class="w-full" required />
+                    <x-input label="Installation Date" type="date" name="date_installed" class="w-full"
+                        required />
+                </div>
+
+                <div class="mb-2">
+                    <x-input label="Expiration Date" type="date" name="date_expired" class="w-full" />
                 </div>
 
                 <div class="mt-6 flex justify-end space-x-3">
@@ -419,14 +420,14 @@
     </div>
 
     <!-- Update App Modal -->
-    <div id="updateApp_modal"
+    <div id="appEdit_modal"
         class="hidden fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm bg-black/30">
         <div class="bg-white rounded-lg shadow-xl w-full max-w-md p-6">
             <h2 class="text-xl font-semibold text-gray-800">Update Application</h2>
             <p class="mt-2 text-sm text-gray-600">Please Select an app to add and fill the form.</p>
 
             <!-- Form -->
-            <form id="updateApp_form" method="POST" class="mt-4 space-y-3">
+            <form id="appEdit_form" method="POST" class="mt-4 space-y-3">
                 @csrf
                 @method('PUT')
                 <input type="hidden" id="updateApp_id" name="id">
@@ -443,20 +444,25 @@
                 </div>
 
                 <div class="mb-2">
-                    <x-input label="Installation Date" id="updateApp_installed_at" type="date"
-                        name="installed_at" class="w-full" required />
+                    <x-input label="Installation Date" id="updateApp_date_installed" type="date"
+                        name="date_installed" class="w-full" required />
+                </div>
+
+                <div class="mb-2">
+                    <x-input label="Expiration Date" id="updateApp_date_expired" type="date" name="date_expired"
+                        class="w-full" required />
                 </div>
 
 
                 <div class="mt-6 flex justify-between space-x-3">
                     <!-- Delete Button on the left -->
-                    <x-button variant="error" id="btn_deleteApp" class="h-10">
+                    <x-button variant="error" id="btn_deleteApp" onclick="Delete_App_Modal($('#updateApp_id').val())" class="h-10">
                         Delete
                     </x-button>
 
                     <!-- Cancel & Save Buttons on the right -->
                     <div class="flex space-x-3">
-                        <x-button variant="gray" onclick="toggleModal('updateApp_modal')">
+                        <x-button variant="gray" onclick="toggleModal('appEdit_modal')">
                             Cancel
                         </x-button>
                         <x-button type="submit">
@@ -469,7 +475,7 @@
     </div>
 
     <!-- Delete Confirmation Modal -->
-    <div id="deleteApp_modal"
+    <div id="appDelete_modal"
         class="hidden fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm bg-black/30">
         <div class="bg-white rounded-lg shadow-xl w-full max-w-md p-6">
             <h2 class="text-xl font-semibold text-gray-800">Confirm Delete</h2>
@@ -480,11 +486,11 @@
             <div class="mt-6 flex justify-end space-x-3">
                 <button type="button"
                     class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition"
-                    onclick="toggleModal('deleteApp_modal')">
+                    onclick="toggleModal('appDelete_modal')">
                     Cancel
                 </button>
 
-                <form id="deleteApp_form" method="POST">
+                <form id="appDelete_form" method="POST">
                     @csrf
                     @method('DELETE')
                     <button type="submit"
@@ -495,6 +501,27 @@
             </div>
         </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Apply to all forms
+            const forms = document.querySelectorAll('form');
+
+            forms.forEach(form => {
+                form.addEventListener('submit', function() {
+                    const submitButtons = form.querySelectorAll(
+                        'button[type="submit"], input[type="submit"]');
+
+                    submitButtons.forEach(button => {
+                        button.disabled = true; // disable
+                        button.textContent = 'Submitting...'; // change text
+                        button.classList.add('opacity-50',
+                            'cursor-not-allowed'); // Tailwind style
+                    });
+                });
+            });
+        });
+    </script>
 
     <script>
         function toggleModal(modalId) {
@@ -509,72 +536,41 @@
             $('#cancelButton').toggleClass('hidden');
         }
 
-        $('.btn_updateUser').on('click', function() {
-            let $updateUser_modal = $('#updateUser_modal');
-            let $updateUser_form = $('#updateUser_form');
+        function Edit_User_Modal(user) {
+            $('#userEdit_form').attr('action', '{{ route('accountability.update', ':id') }}'.replace(':id', user.id));
+            $('#userEdit_modal').toggleClass('hidden');
 
-            $updateUser_modal.toggleClass('hidden');
-            let id = $(this).data('id');
-            let name = $(this).data('name');
-            let department = $(this).data('department');
-            let location = $(this).data('location');
-            let history = $(this).data('history');
-            let dateReceived = $(this).data('dateReceived');
-            let dateReturned = $(this).data('dateReturned');
+            $('#update_id').val(user.id);
+            $('#update_name').val(user.name);
+            $('#update_department').val(user.department);
+            $('#update_location').val(user.location);
+            $('#update_history').val(user.history);
+            $('#update_date_received').val(user.date_received);
+            $('#update_date_returned').val(user.date_returned);
+        }
 
-            $('#update_id').val(id);
-            $('#update_name').val(name);
-            $('#update_department').val(department);
-            $('#update_location').val(location);
-            $('#update_history').val(history);
-            $('#update_date_received').val(dateReceived);
-            $('#update_date_returned').val(dateReturned);
+        function Delete_User_Modal(id) {
+            let action = "{{ route('accountability.destroy', ':id') }}".replace(':id', id);
+            $('#userDelete_form').attr('action', action);
+            $('#userDelete_modal').toggleClass('hidden');
+        }
 
-            baseUrl = "{{ url('/') }}";
-            $updateUser_form.attr('action', `${baseUrl}/accountability/${id}`);
-        });
+        function Edit_App_Modal(app) {
+            $('#appEdit_form').attr('action', '{{ route('inventory_software.update', ':id') }}'.replace(':id', app.id));
+            $('#appEdit_modal').toggleClass('hidden');
 
+            $('#updateApp_id').val(app.id);
+            $('#updateApp_software_id').val(app.software_id);
+            $('#updateApp_product_key').val(app.product_key);
+            $('#updateApp_date_installed').val(app.date_installed);
+            $('#updateApp_date_expired').val(app.date_expired);
+        }
 
-        $('#btn_deleteUser').on('click', function() {
-            let $deleteUser_modal = $('#deleteUser_modal');
-            let $deleteUser_form = $('#deleteUser_form');
-            $deleteUser_modal.toggleClass('hidden');
-            $selected_id = $('#update_id').val();
+        function Delete_App_Modal(id) {
+            let action = "{{ route('inventory_software.destroy', ':id') }}".replace(':id', id);
+            $('#appDelete_form').attr('action', action);
+            $('#appDelete_modal').toggleClass('hidden');
+        }
 
-            let baseUrl = "{{ route('accountability.destroy', ['id' => '__id__']) }}";
-            $deleteUser_form.attr('action', baseUrl.replace('__id__', $selected_id));
-        });
-
-        $('.btn_updateApp').on('click', function() {
-            let $updateApp_modal = $('#updateApp_modal');
-            let $updateApp_form = $('#updateApp_form');
-
-            $updateApp_modal.toggleClass('hidden');
-
-            let id = $(this).data('id');
-            let software_id = $(this).data('software_id');
-            let product_key = $(this).data('product_key');
-            let installed_at = $(this).data('installed_at');
-
-            $('#updateApp_id').val(id);
-            $('#updateApp_software_id').val(software_id);
-            $('#updateApp_product_key').val(product_key);
-            $('#updateApp_installed_at').val(installed_at);
-
-            let baseUrl = "{{ url('/') }}";
-
-            // ✅ correct route + variable
-            $updateApp_form.attr('action', `${baseUrl}/inventory_software/${id}`);
-        });
-
-        $('#btn_deleteApp').on('click', function() {
-            let $deleteApp_modal = $('#deleteApp_modal');
-            let $deleteApp_form = $('#deleteApp_form');
-            $deleteApp_modal.toggleClass('hidden');
-            $selected_id = $('#updateApp_id').val();
-
-            let baseUrl = "{{ route('inventory_software.destroy', ['inventory_software' => '__id__']) }}";
-            $deleteApp_form.attr('action', baseUrl.replace('__id__', $selected_id));
-        });
     </script>
 </x-layout>

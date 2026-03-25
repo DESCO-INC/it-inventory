@@ -24,8 +24,9 @@
                 Main Menu
             </div>
             <x-layout.sidebar-link route="units.index" label="Inventory List" icon="heroicon-s-computer-desktop" />
+            <x-layout.sidebar-link route="accountability.index" label="Accountability List"
+                icon="heroicon-s-user-group" />
             <x-layout.sidebar-link route="software.index" label="Software List" icon="heroicon-s-cpu-chip" />
-            <x-layout.sidebar-link route="accountability.index" label="Accountability List" icon="heroicon-s-user-group" />
         </div>
 
         <!-- Separator Header -->
@@ -48,13 +49,14 @@
             </button>
 
             @php
-                $isMaintenanceOpen = request()->routeIs('maintenance.*');
+                $isMaintenanceOpen = request()->routeIs('maintenance.*')
             @endphp
 
             <!-- Dropdown Items -->
             <div id="maintenanceMenu" class="{{ $isMaintenanceOpen ? '' : 'hidden' }} flex flex-col ml-4 gap-1">
-                <x-layout.sidebar-link route="maintenance.users" label="User Maintenance" icon="heroicon-s-wrench" />
-                <x-layout.sidebar-link route="#" label="Others" icon="heroicon-s-wrench" />
+                <x-layout.sidebar-link route="maintenance.users" label="User Maintenance" icon="heroicon-s-users" />
+
+                <x-layout.sidebar-link route="maintenance.softwares" label="Software Maintenance" icon="heroicon-s-cpu-chip" />
             </div>
         </div>
     </nav>

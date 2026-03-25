@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Models\User;
 use Illuminate\Support\Facades\Hash; // For password hashing
 use Illuminate\Validation\Rule;
+
+use App\Models\User;
+use App\Models\Software;
 
 class MaintenanceController extends Controller
 {
@@ -43,7 +45,7 @@ class MaintenanceController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
             'credential' => 'nullable|string|max:255',
-            'password' => 'required|string|min:6|confirmed', // expects password_confirmation
+            'password' => 'required|string|min:5|confirmed', // expects password_confirmation
         ]);
 
         User::create([
@@ -60,25 +62,23 @@ class MaintenanceController extends Controller
     public function update(Request $request, $id)
     {
         $user = User::findOrFail($id);
-
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => ['required', 'email', Rule::unique('users')->ignore($user->id)],
             'credential' => 'required|string|in:ADMIN,USER',
-            'password' => 'nullable|string|min:6|confirmed', // optional
+            'password' => 'nullable|string|min:5|confirmed',
         ]);
+        $data = $validated;
+        $data['name'] = strtoupper($data['name']);
 
-        $user->name = $validated['name'];
-        $user->email = $validated['email'];
-        $user->credential = $validated['credential'];
-
-        // Only update password if a value is entered
-        if (!empty($validated['password'])) {
-            $user->password = Hash::make($validated['password']);
+        // Handle password separately
+        if (!empty($data['password'])) {
+            $data['password'] = Hash::make($data['password']);
+        } else {
+            unset($data['password']);
         }
 
-        $user->save();
-
+        $user->update($data);
         return back()->with('success', 'User updated successfully!');
     }
 
@@ -96,5 +96,21 @@ class MaintenanceController extends Controller
     {
         $count = Inventory::count();
         return view('maintenance.reports', compact('count'));
+    }
+
+    public function softwares(Request $request)
+    {
+        $search = $request->input('search');
+
+        $query = Software::when($search, function ($q) use ($search) {
+            $q->where(function ($query) use ($search) {
+                $query
+                    ->where('name', 'like', "%{$search}%")
+                    ->orWhere('supplier', 'like', "%{$search}%");
+            });
+        });
+
+        $softwares = $query->orderBy('id', 'desc')->paginate(10);
+        return view('maintenance.softwares', compact('softwares', 'search'));
     }
 }

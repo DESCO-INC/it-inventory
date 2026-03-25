@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('accountability', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(\App\Models\Inventory::class);
+            $table->foreignIdFor(\App\Models\Inventory::class)->constrained()->cascadeOnDelete();
             $table->string('name')->nullable();
             $table->string('department')->nullable();
             $table->string('location')->nullable();
@@ -23,6 +23,7 @@ return new class extends Migration
             $table->string('returned_to')->nullable();
             $table->string('created_by')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

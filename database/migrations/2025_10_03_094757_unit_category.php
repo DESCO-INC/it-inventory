@@ -18,11 +18,12 @@ return new class extends Migration
             $table->string('count_index');
             $table->string('years_depreciation');
             $table->timestamps();
+            $table->softDeletes();
         });
         
         DB::table('unit_category')->insert([
             [
-                'code' => 'DSU',
+                'code' => 'NDSU',
                 'name' => 'DESKTOP SYSTEM UNIT',
                 'count_index' => '1',
                 'years_depreciation' => '5',
@@ -30,7 +31,7 @@ return new class extends Migration
                 'updated_at' => now(),
             ],
             [
-                'code' => 'LSU',
+                'code' => 'NLSU',
                 'name' => 'LAPTOP SYSTEM UNIT',
                 'count_index' => '2',
                 'years_depreciation' => '5',
@@ -38,7 +39,7 @@ return new class extends Migration
                 'updated_at' => now(),
             ],
             [
-                'code' => 'PSU',
+                'code' => 'NPSU',
                 'name' => 'PRINTER SYSTEM UNIT',
                 'count_index' => '3',
                 'years_depreciation' => '5',
@@ -46,7 +47,7 @@ return new class extends Migration
                 'updated_at' => now(),
             ],
             [
-                'code' => 'HWU',
+                'code' => 'NHWU',
                 'name' => 'HARDWARE SYSTEM UNIT',
                 'count_index' => '4',
                 'years_depreciation' => '5',
@@ -54,7 +55,7 @@ return new class extends Migration
                 'updated_at' => now(),
             ],
             [
-                'code' => 'SWU',
+                'code' => 'NSWU',
                 'name' => 'SOFTWARE UNIT',
                 'count_index' => '5',
                 'years_depreciation' => '5',

@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('department');
             $table->string('status')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
         
         DB::table('department')->insert([

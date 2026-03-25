@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 use App\Models\Software;
+use App\Models\InventorySoftware;
 
 class SoftwareController extends Controller
 {
@@ -13,11 +14,18 @@ class SoftwareController extends Controller
     {
         $search = $request->input('search');
 
-        $query = Software::when($search, function ($q) use ($search) {
+        $query = InventorySoftware::with(['inventory', 'software'])->when($search, function ($q) use ($search) {
             $q->where(function ($query) use ($search) {
                 $query
-                    ->where('name', 'like', "%{$search}%")
-                    ->orWhere('supplier', 'like', "%{$search}%");
+                    // Search in SOFTWARE table
+                    ->whereHas('software', function ($q) use ($search) {
+                        $q->where('control_no', 'like', "%{$search}%")->orWhere('serial', 'like', "%{$search}%");
+                    })
+
+                    // OR search in INVENTORY table
+                    ->orWhereHas('inventory', function ($q) use ($search) {
+                        $q->where('serial', 'like', "%{$search}%")->orWhere('property_no', 'like', "%{$search}%");
+                    });
             });
         });
 
@@ -39,7 +47,7 @@ class SoftwareController extends Controller
 
         $software = Software::create($validation);
 
-        return redirect()->route('software.index')->with('success', 'Software Added Successfully');
+        return back()->with('success', 'Software Added Successfully');
     }
 
     public function update(Request $request, $id)

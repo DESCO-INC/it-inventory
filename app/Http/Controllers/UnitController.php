@@ -102,7 +102,6 @@ class UnitController extends Controller
         $department = Department::pluck('department');
         $softwareLists = Software::get();
         $software = InventorySoftware::with('software')->where('inventory_id', $unit->id)->get();
-
         return view('units.edit', compact('unit', 'category', 'accountability', 'department', 'software', 'softwareLists'));
     }
 
