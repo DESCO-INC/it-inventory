@@ -56,7 +56,7 @@
 
                     <div class="mb-1">
                         <x-input label="Purchase Number" name="purchase_no" class="w-full"
-                            value="{{ $unit['purchase_no'] }}" />
+                            value="{!! html_entity_decode($unit['purchase_no']) !!}" />
                     </div>
 
                     <div class="mb-1">
@@ -90,7 +90,7 @@
 
                     <div class="mb-1 hidden" id="unitWeightField">
                         <x-input label="Unit Weight (kg)" name="unit_weight" type="number" class="w-full"
-                            value="{{ $unit['remarks'] }}" />
+                            value="{!! html_entity_decode($unit['remarks']) !!}"/>
                     </div>
 
                     <div class="mb-1 hidden" id="disposedLocationField">
