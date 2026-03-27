@@ -75,7 +75,7 @@
                     </div>
 
                     <div class="mb-1">
-                        <x-select label="Status" id="status" name="credential" :options="[
+                        <x-select label="Status" id="status" name="status" :options="[
                             '' => 'Select Status',
                             'ACTIVE' => 'ACTIVE',
                             'DEFECTIVE' => 'DEFECTIVE',
