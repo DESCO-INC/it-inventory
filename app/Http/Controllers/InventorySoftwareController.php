@@ -17,6 +17,7 @@ class InventorySoftwareController extends Controller
             'inventory_id' => 'required',
             'software_id' => 'required',
             'product_key' => 'nullable',
+            'remarks' => 'nullable',
             'date_installed' => 'required|date',
             'date_expired' => 'nullable|date',
         ]);
@@ -41,6 +42,7 @@ class InventorySoftwareController extends Controller
         $validated = $request->validate([
             'software_id' => 'required',
             'product_key' => 'nullable',
+            'remarks' => 'nullable',
             'date_installed' => 'required|date',
             'date_expired' => 'nullable|date',
         ]);

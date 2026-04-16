@@ -19,17 +19,18 @@ class SoftwareController extends Controller
                 $query
                     // Search in SOFTWARE table
                     ->whereHas('software', function ($q) use ($search) {
-                        $q->where('control_no', 'like', "%{$search}%")->orWhere('serial', 'like', "%{$search}%");
+                        $q->where('name', 'like', "%{$search}%");
                     })
 
                     // OR search in INVENTORY table
                     ->orWhereHas('inventory', function ($q) use ($search) {
-                        $q->where('serial', 'like', "%{$search}%")->orWhere('property_no', 'like', "%{$search}%");
+                        $q->where('control_no', 'like', "%{$search}%")->orWhere('serial', 'like', "%{$search}%");
                     });
             });
         });
 
-        $softwares = $query->orderBy('id', 'desc')->paginate(10);
+        $softwares = $query->orderByRaw('date_expired IS NULL ASC')->orderBy('date_expired', 'asc')->paginate(10);
+        
         return view('software.index', compact('softwares', 'search'));
     }
 

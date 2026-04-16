@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Str;
+use Carbon\Carbon;
 
 use App\Models\Inventory;
 use App\Models\UnitCategory;
@@ -59,9 +60,15 @@ class UnitController extends Controller
             return $unit;
         });
 
+        $expired_count = InventorySoftware::whereNotNull('date_expired')->where('date_expired', '<', Carbon::today())->count();
+
+        $expiring_count = InventorySoftware::whereNotNull('date_expired')
+            ->whereBetween('date_expired', [Carbon::today(), Carbon::today()->addMonth()])
+            ->count();
+
         $stats = Inventory::stats();
 
-        return view('units.index', compact('units', 'search', 'stats'));
+        return view('units.index', compact('units', 'search', 'stats', 'expired_count', 'expiring_count'));
     }
 
     public function create()

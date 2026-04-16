@@ -399,6 +399,10 @@
                 </div>
 
                 <div class="mb-2">
+                    <x-input label="Remarks" name="remarks" class="w-full" placeholder="optional" />
+                </div>
+
+                <div class="mb-2">
                     <x-input label="Installation Date" type="date" name="date_installed" class="w-full"
                         required />
                 </div>
@@ -440,6 +444,11 @@
 
                 <div class="mb-2">
                     <x-input label="Product Key" id="updateApp_product_key" name="product_key" class="w-full"
+                        placeholder="optional" />
+                </div>
+
+                <div class="mb-2">
+                    <x-input label="Remarks" id="updateApp_remarks" name="remarks" class="w-full"
                         placeholder="optional" />
                 </div>
 
@@ -562,6 +571,7 @@
             $('#updateApp_id').val(app.id);
             $('#updateApp_software_id').val(app.software_id);
             $('#updateApp_product_key').val(app.product_key);
+            $('#updateApp_remarks').val(app.remarks);
             $('#updateApp_date_installed').val(app.date_installed);
             $('#updateApp_date_expired').val(app.date_expired);
         }

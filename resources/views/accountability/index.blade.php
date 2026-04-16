@@ -14,7 +14,7 @@
         <div class="overflow-x-auto">
             <form method="GET" class="mb-4 flex items-center gap-2 w-[300px]">
                 <x-input name="search" size="sm" value="{{ $search }}" placeholder="Search" />
-                <x-button size="sm" variant="success">Search</x-button>
+                <x-button size="sm" type="submit" variant="success">Search</x-button>
             </form>
 
             <div class="overflow-x-auto border border-gray-200 rounded">
@@ -28,7 +28,8 @@
                             <th class="px-4 py-3 text-left text-sm font-medium">Item Control No.</th>
                             <th class="px-4 py-3 text-left text-sm font-medium">Model Name</th>
                             <th class="px-4 py-3 text-left text-sm font-medium">Date Received</th>
-                            <th class="px-4 py-3 text-left text-sm font-medium">Status</th>
+                            <th class="px-4 py-3 text-left text-sm font-medium">Unit Status</th>
+                            <th class="px-4 py-3 text-left text-sm font-medium">Acc. Status</th>
                             <th class="px-4 py-3 text-center text-sm font-medium w-15">Options</th>
                         </tr>
                     </thead>
@@ -40,6 +41,13 @@
                                     'ACTIVE' => 'active',
                                     'DEFECTIVE' => 'defective',
                                     'DISPOSED' => 'disposed',
+                                    default => 'info',
+                                };
+
+                                $accstatus = $acc->date_returned ? 'RETURNED' : 'ACTIVE';
+                                $accstatusbadge = match ($accstatus) {
+                                    'ACTIVE' => 'active',
+                                    'RETURNED' => 'disposed',
                                     default => 'info',
                                 };
                             @endphp
@@ -55,6 +63,11 @@
                                 <td class="px-4 py-3 text-xs text-gray-800">
                                     <x-badge variant="{{ $status }}">
                                         {{ $acc->inventory->status }}
+                                    </x-badge>
+                                </td>
+                                <td class="px-4 py-3 text-xs text-gray-800">
+                                    <x-badge variant="{{ $accstatusbadge }}">
+                                        {{ $accstatus }}
                                     </x-badge>
                                 </td>
                                 <td class="px-4 py-2 text-center flex justify-center gap-1">

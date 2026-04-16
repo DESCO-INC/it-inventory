@@ -25,22 +25,37 @@
                             <th class="px-4 py-3 text-left text-sm font-medium">Date Installed</th>
                             <th class="px-4 py-3 text-left text-sm font-medium">Expiration</th>
                             <th class="px-4 py-3 text-left text-sm font-medium">Inventory Control #</th>
-                            <th class="px-4 py-3 text-left text-sm font-medium">Model</th>
                             <th class="px-4 py-3 text-left text-sm font-medium">Installed By</th>
+                            <th class="px-4 py-3 text-left text-sm font-medium">Status</th>
+                            <th class="px-4 py-3 text-left text-sm font-medium">Remarks</th>
                             <th class="px-4 py-3 text-center text-sm font-medium w-15">Options</th>
                         </tr>
                     </thead>
 
                     <tbody class="divide-y divide-gray-100">
                         @forelse($softwares as $software)
+                            @php
+                                $variant = match ($software->status) {
+                                    'NO EXPIRY' => 'info',
+                                    'EXPIRED' => 'disposed',
+                                    'EXPIRING' => 'defective',
+                                    'ACTIVE' => 'success',
+                                    default => 'info',
+                                };
+                            @endphp
                             <tr>
                                 <td class="px-4 py-3 text-xs text-gray-800">{{ $software->software->name }}</td>
                                 <td class="px-4 py-3 text-xs text-gray-800">{{ $software->software->supplier }}</td>
                                 <td class="px-4 py-3 text-xs text-gray-800">{{ $software->date_installed }}</td>
                                 <td class="px-4 py-3 text-xs text-gray-800">{{ $software->date_expired }}</td>
                                 <td class="px-4 py-3 text-xs text-gray-800">{{ $software->inventory->control_no }}</td>
-                                <td class="px-4 py-3 text-xs text-gray-800">{{ $software->inventory->model_name }}</td>
                                 <td class="px-4 py-3 text-xs text-gray-800">{{ $software->installed_by }}</td>
+                                <td class="px-4 py-3 text-xs text-gray-800 text-center">
+                                    <x-badge variant="{{ $variant }}">
+                                        {{ $software->status }}
+                                    </x-badge>
+                                </td>
+                                <td class="px-4 py-3 text-xs text-gray-800">{{ $software->remarks }}</td>
                                 <td class="px-4 py-2 text-center flex justify-center gap-1">
                                     <x-button size="xs" variant="info"
                                         href="{{ route('units.edit', $software->inventory->id) }}">

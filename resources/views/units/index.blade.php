@@ -1,4 +1,61 @@
 <x-layout>
+    <!-- Alert -->
+    @if ($expired_count > 0 || $expiring_count > 0)
+        <div id="alertBox" class="mb-4 animate-pulse [animation-duration:0.8s]">
+            <div
+                class="flex items-start justify-between gap-3 p-3 rounded-md bg-amber-50 border border-amber-200 text-amber-800 shadow-sm">
+
+                <!-- Left Content -->
+                <div class="flex items-start gap-3 w-full">
+
+                    <!-- Icon -->
+                    <div class="flex items-center justify-center w-8 h-8 rounded-md bg-amber-100 animate-bounce">
+                        <x-heroicon-o-exclamation-triangle class="w-5 h-5 text-amber-600" />
+                    </div>
+
+                    <!-- Text -->
+                    <div class="leading-snug w-full">
+                        <p class="text-lg font-semibold">ATTENTION</p>
+                        <p class="text-md text-amber-700">
+                            Some software licenses need attention.
+                        </p>
+
+                        <!-- Counts -->
+                        <div class="mt-1 text-md text-amber-800 space-y-0.5">
+                            @if ($expiring_count > 0)
+                                <p>License About to expire:
+                                    <span class="font-semibold">{{ $expiring_count }}</span>
+                                </p>
+                            @endif
+                            
+                            @if ($expired_count > 0)
+                                <p>Expired License:
+                                    <span class="font-semibold">{{ $expired_count }}</span>
+                                </p>
+                            @endif
+                        </div>
+
+                        <!-- Bottom Link -->
+                        <div class="mt-2">
+                            <a href="{{ route('software.index') }}" target="_blank"
+                                class="text-sm font-medium text-amber-700 hover:text-amber-900 underline underline-offset-2">
+                                View Details →
+                            </a>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Close Button -->
+                <button onclick="document.getElementById('alertBox').style.display='none'"
+                    class="text-amber-500 hover:text-amber-700 transition">
+                    <x-heroicon-o-x-mark class="w-5 h-5" />
+                </button>
+
+            </div>
+        </div>
+    @endif
+
     <!-- Dashboard Cards -->
     <div class="grid grid-cols-4 grid-rows-2 gap-2 mb-3">
 
@@ -132,7 +189,8 @@
                                     </x-badge>
                                 </td>
                                 <td class="px-4 py-2 text-center flex justify-center gap-1">
-                                    <x-button size="xs" variant="info" href="{{ route('units.edit', $unit->id) }}">
+                                    <x-button size="xs" variant="info"
+                                        href="{{ route('units.edit', $unit->id) }}">
                                         Manage
                                     </x-button>
                                 </td>

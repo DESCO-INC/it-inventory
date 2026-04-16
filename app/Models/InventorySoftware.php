@@ -20,4 +20,14 @@ class InventorySoftware extends Model
     {
         return $this->belongsTo(Software::class);
     }
+
+    public function getStatusAttribute()
+    {
+        return match (true) {
+            is_null($this->date_expired) => 'NO EXPIRY',
+            $this->date_expired < now() => 'EXPIRED',
+            $this->date_expired <= now()->addMonth() => 'EXPIRING',
+            default => 'ACTIVE',
+        };
+    }
 }
