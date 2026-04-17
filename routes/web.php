@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Mail;
+
 use App\Http\Controllers\SessionController;
 use App\Http\Controllers\RegisterUserController;
 use App\Http\Controllers\UnitController;
@@ -23,6 +25,10 @@ Route::resource('software', SoftwareController::class)->except(['show'])->middle
 
 // SoftwareInventory
 Route::resource('inventory_software', InventorySoftwareController::class)->except(['show'])->middleware('auth');
+
+Route::prefix('inventory_software')->controller(InventorySoftwareController::class)->group(function () {
+    Route::get('/notification', 'sendNotification')->name('inventory_software.notification');
+});
 
 Route::prefix('units')->middleware(['auth'])->controller(UnitController::class)->group(function () {
     Route::get('/', 'index')->name('units.index');

@@ -42,11 +42,8 @@ class SessionController extends Controller
         request()->session()->regenerate();
 
         //redirect
-        if (Auth::user()->credential === 'ADMIN') {
-            return redirect('/units')->with('success', 'Login successful! Welcome 🎉');
-        } else {
-            return redirect('/accountability')->with('success', 'Login successful! Welcome 🎉');
-        }
+        $redirect = Auth::user()->credential === 'ADMIN' ? '/units' : '/accountability';
+        return redirect()->intended($redirect)->with('success', 'Login successful! Welcome 🎉');
     }
 
     public function destroy()
