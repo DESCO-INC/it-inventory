@@ -67,7 +67,7 @@ class InventorySoftwareController extends Controller
 
     public function sendNotification()
     {
-        $recipients = User::whereNotNull('email')->get();
+        $recipients = User::whereNotNull('email')->where('credential', 'ADMIN')->get();
 
         $software = InventorySoftware::with(['inventory.latestAccountability', 'software'])
             ->whereNotNull('date_expired')
