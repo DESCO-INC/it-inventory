@@ -1,42 +1,105 @@
-@props([
-    'type' => 'default', // default, success, warning, info, error
-    'message'
-])
+@props(['timeout' => 4000])
 
-@php
-    $colors = [
-        'default' => ['bg' => 'bg-gray-100', 'border' => 'border-gray-300', 'text' => 'text-gray-700', 'icon' => 'text-gray-500'],
-        'success' => ['bg' => 'bg-green-100', 'border' => 'border-green-400', 'text' => 'text-green-700', 'icon' => 'text-green-500'],
-        'warning' => ['bg' => 'bg-yellow-100', 'border' => 'border-yellow-400', 'text' => 'text-yellow-700', 'icon' => 'text-yellow-500'],
-        'info'    => ['bg' => 'bg-blue-100', 'border' => 'border-blue-400', 'text' => 'text-blue-700', 'icon' => 'text-blue-500'],
-        'error'   => ['bg' => 'bg-red-100', 'border' => 'border-red-400', 'text' => 'text-red-700', 'icon' => 'text-red-500'],
-    ];
+<div id="toast-container" class="fixed top-5 right-5 z-50 space-y-3 w-80"></div>
 
-    $color = $colors[$type] ?? $colors['default'];
-    $toastId = 'toast-' . uniqid();
-@endphp
+@if (session('success'))
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            window.showToast('success', @json(session('success')));
+        });
+    </script>
+@endif
 
-<div id="{{ $toastId }}"
-     class="fixed top-4 right-4 z-50 flex items-center w-full max-w-xs p-4 rounded-lg shadow-lg border {{ $color['border'] }} {{ $color['bg'] }}"
-     role="alert">
-    <svg class="flex-shrink-0 w-5 h-5 {{ $color['icon'] }}" fill="currentColor" viewBox="0 0 20 20">
-        <path fill-rule="evenodd"
-              d="M16.707 5.293a1 1 0 01.083 1.32l-.083.094L9 14.414 4.707 10.12a1 1 0 011.32-1.497l.094.083L9 11.586l7.293-7.293a1 1 0 011.414 0z"
-              clip-rule="evenodd" />
-    </svg>
-    <div class="ml-3 text-sm font-medium {{ $color['text'] }}">
-        {{ $message }}
-    </div>
-    <button type="button"
-            class="ml-auto -mx-1.5 -my-1.5 text-gray-400 hover:text-gray-600 rounded-lg focus:ring-2 focus:ring-gray-300 p-1.5 hover:bg-gray-100 inline-flex items-center justify-center h-8 w-8"
-            onclick="document.getElementById('{{ $toastId }}').remove()">
-        ✖
-    </button>
-</div>
+@if (session('error'))
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            window.showToast('error', @json(session('error')));
+        });
+    </script>
+@endif
+
+@if (session('info'))
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            window.showToast('info', @json(session('info')));
+        });
+    </script>
+@endif
+
+@if (session('warning'))
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            window.showToast('warning', @json(session('warning')));
+        });
+    </script>
+@endif
+
+@if ($errors->any())
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            window.showToast(
+                'warning',
+                @json($errors->first())
+            );
+        });
+    </script>
+@endif
 
 <script>
-    setTimeout(() => {
-        const toast = document.getElementById('{{ $toastId }}');
-        if (toast) toast.remove();
-    }, 4000);
+    function showToast(type = 'info', message = '') {
+        const container = document.getElementById('toast-container');
+
+        const config = {
+            success: {
+                border: 'border-green-500',
+                icon: `<x-heroicon-o-check-circle class="w-5 h-5 text-green-600" />`
+            },
+            error: {
+                border: 'border-red-500',
+                icon: `<x-heroicon-o-x-circle class="w-5 h-5 text-red-600" />`
+            },
+            info: {
+                border: 'border-blue-500',
+                icon: `<x-heroicon-o-information-circle class="w-5 h-5 text-blue-600" />`
+            },
+            warning: {
+                border: 'border-yellow-500',
+                icon: `<x-heroicon-o-exclamation-triangle class="w-5 h-5 text-yellow-600" />`
+            },
+        };
+
+        const selected = config[type] || config.info;
+
+        const toast = document.createElement('div');
+
+        toast.className = `
+        flex items-start gap-3 p-4 rounded-lg
+        bg-white text-black
+        border-l-4 ${selected.border}
+        shadow-lg
+        transition-all duration-300
+    `;
+
+        toast.innerHTML = `
+        <div class="mt-0.5">
+            ${selected.icon}
+        </div>
+
+        <div class="flex-1 text-sm leading-snug">
+            ${message}
+        </div>
+
+        <button class="text-gray-400 hover:text-black transition"
+                onclick="this.parentElement.remove()">
+            <x-heroicon-o-x-mark class="w-4 h-4" />
+        </button>
+    `;
+
+        container.appendChild(toast);
+
+        setTimeout(() => {
+            toast.classList.add('opacity-0', 'translate-x-5');
+            setTimeout(() => toast.remove(), 300);
+        }, 4000);
+    }
 </script>

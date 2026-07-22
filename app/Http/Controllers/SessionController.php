@@ -20,10 +20,10 @@ class SessionController extends Controller
         }
 
         // Return login view for guests
-        return response()->view('auth.login')->header('Cache-Control', 'no-cache, no-store, must-revalidate')->header('Pragma', 'no-cache')->header('Expires', '0'); // prevent browser from caching login
+        return response()->view('pages.auth.login')->header('Cache-Control', 'no-cache, no-store, must-revalidate')->header('Pragma', 'no-cache')->header('Expires', '0'); // prevent browser from caching login
     }
 
-    public function store()
+    public function login()
     {
         // validate
         $attributes = request()->validate([

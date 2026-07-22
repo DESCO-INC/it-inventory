@@ -57,6 +57,8 @@
                 <x-layout.sidebar-link route="maintenance.users" label="User Maintenance" icon="heroicon-s-users" />
 
                 <x-layout.sidebar-link route="maintenance.softwares" label="Software Maintenance" icon="heroicon-s-cpu-chip" />
+
+                <x-layout.sidebar-link route="maintenance.email" label="Email Alert Settings" icon="heroicon-s-envelope-open" />
             </div>
         </div>
     </nav>

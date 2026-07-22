@@ -68,13 +68,13 @@ class UnitController extends Controller
 
         $stats = Inventory::stats();
 
-        return view('units.index', compact('units', 'search', 'stats', 'expired_count', 'expiring_count'));
+        return view('pages.inventory.dashboard', compact('units', 'search', 'stats', 'expired_count', 'expiring_count'));
     }
 
     public function create()
     {
         $category = UnitCategory::get();
-        return view('units.create', [
+        return view('pages.inventory.create', [
             'category' => $category,
         ]);
     }
@@ -109,7 +109,7 @@ class UnitController extends Controller
         $department = Department::pluck('department');
         $softwareLists = Software::get();
         $software = InventorySoftware::with('software')->where('inventory_id', $unit->id)->get();
-        return view('units.edit', compact('unit', 'category', 'accountability', 'department', 'software', 'softwareLists'));
+        return view('pages.inventory.edit', compact('unit', 'category', 'accountability', 'department', 'software', 'softwareLists'));
     }
 
     public function update(Request $request, Inventory $unit)

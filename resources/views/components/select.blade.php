@@ -1,55 +1,37 @@
 @props([
-    'label' => '',
+    'label' => null,
     'name',
-    'options' => [],
+    'id' => null,
     'value' => '',
-    'size' => 'md',
-    'width' => '40',
-    'readonly' => false,
+    'wrapperClass' => '',
 ])
 
 @php
-    $error = $errors->first($name);
-
-    // Size variants
-    $sizes = [
-        'sm' => ['select' => 'px-2 py-1 text-sm', 'label' => 'text-xs'],
-        'md' => ['select' => 'px-2 py-1.5 text-sm', 'label' => 'text-sm'],
-        'lg' => ['select' => 'px-3 py-2 text-base', 'label' => 'text-base'],
-    ];
-
-    $selectSize = $sizes[$size]['select'] ?? $sizes['md']['select'];
-    $labelSize = $sizes[$size]['label'] ?? $sizes['md']['label'];
-
-    // Width class
-    $widthClass = $width ? "w-$width" : 'w-full';
+    $id = $id ?? $name;
 @endphp
 
-<div class="flex flex-col {{ $widthClass }}">
-    {{-- Label --}}
+<div class="{{ $wrapperClass }}">
     @if ($label)
-        <label for="{{ $name }}" class="mb-1 font-semibold text-gray-500  {{ $labelSize }}">
+        <label
+            for="{{ $id }}"
+            class="block mb-2 text-sm font-medium text-[var(--text-color)]">
             {{ $label }}
         </label>
     @endif
 
-    {{-- Select --}}
-    <select name="{{ $name }}" id="{{ $attributes->get('id') ?? $name }}"
-        {{ $attributes->merge([
-            'class' =>
-                "$selectSize border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[var(--color-accent)] focus:border-[var(--color-accent)] transition-colors duration-200 " .
-                ($readonly ? 'cursor-not-allowed bg-gray-100 text-gray-500' : ''),
-        ]) }}
-        @if ($readonly) onmousedown="return false;" onkeydown="return false;" @endif>
-        @foreach ($options as $optionValue => $optionLabel)
-            <option value="{{ $optionValue }}" {{ old($name, $value) == $optionValue ? 'selected' : '' }}>
-                {{ $optionLabel }}
-            </option>
-        @endforeach
+    <select
+        id="{{ $id }}"
+        name="{{ $name }}"
+        {{ $attributes->except('class')->merge([
+            'class' => 'w-full px-4 py-2 rounded-lg bg-[var(--primary-color)] border border-[var(--secondary-border-color)] text-[var(--text-color)] focus:outline-none focus:ring-2 focus:ring-[var(--accent-color)] focus:border-transparent',
+        ]) }}>
+
+        {{ $slot }}
     </select>
 
-    {{-- Error --}}
-    @if ($error)
-        <span class="text-red-600 text-xs mt-1">{{ $error }}</span>
-    @endif
+    @error($name)
+        <p class="mt-1 text-sm text-red-400">
+            {{ $message }}
+        </p>
+    @enderror
 </div>

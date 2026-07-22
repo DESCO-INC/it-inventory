@@ -31,7 +31,7 @@ class SoftwareController extends Controller
 
         $softwares = $query->orderByRaw('date_expired IS NULL ASC')->orderBy('date_expired', 'asc')->paginate(10);
         
-        return view('software.index', compact('softwares', 'search'));
+        return view('pages.software.dashboard', compact('softwares', 'search'));
     }
 
     public function store(Request $request)

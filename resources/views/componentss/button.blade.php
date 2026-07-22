@@ -16,6 +16,8 @@
         'purple'  => 'bg-purple-500 hover:bg-purple-600 text-white',
         'error'   => 'bg-red-500 hover:bg-red-600 text-white',
         'gray'    => 'bg-gray-500 hover:bg-gray-600 text-white',
+        'white'    => 'bg-white hover:bg-gray-100 text-[var(--color-accent)]',
+        'inverted'    => 'border border-white hover:border-gray-100 text-white hover:bg-white hover:text-[var(--color-accent)]',
         default   => 'bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)] text-white',
     };
 

@@ -20,10 +20,8 @@ class MaintenanceController extends Controller
             return redirect()->route('accountability.index')->with('error', 'Access denied: Admins only!');
         }
 
-        // Base query
         $query = User::query();
 
-        // Apply search if provided
         $search = $request->input('search', '');
         if ($search) {
             $query->where(function ($q) use ($search) {
@@ -33,10 +31,9 @@ class MaintenanceController extends Controller
             });
         }
 
-        // Order by ID descending and paginate
         $users = $query->orderByDesc('id')->paginate(10)->withQueryString();
 
-        return view('maintenance.users', compact('users', 'search'));
+        return view('pages.maintenance.user', compact('users', 'search'));
     }
 
     public function store(Request $request)
@@ -104,13 +101,17 @@ class MaintenanceController extends Controller
 
         $query = Software::when($search, function ($q) use ($search) {
             $q->where(function ($query) use ($search) {
-                $query
-                    ->where('name', 'like', "%{$search}%")
-                    ->orWhere('supplier', 'like', "%{$search}%");
+                $query->where('name', 'like', "%{$search}%")->orWhere('supplier', 'like', "%{$search}%");
             });
         });
 
         $softwares = $query->orderBy('id', 'desc')->paginate(10);
-        return view('maintenance.softwares', compact('softwares', 'search'));
+        return view('pages.maintenance.software', compact('softwares', 'search'));
+    }
+
+    public function email()
+    {
+        $users = User::select('name', 'email')->get();
+        return view('maintenance.email', compact('users'));
     }
 }

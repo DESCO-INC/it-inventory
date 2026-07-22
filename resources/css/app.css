@@ -21,3 +21,66 @@
         --color-accent-hover: #018933;
     }
 }
+
+
+@theme {
+    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+        'Segoe UI Symbol', 'Noto Color Emoji';
+}
+
+:root {
+    --primary-color: #262626;
+
+    --secondary-color: #171717;
+    --secondary-border-color: #404040;
+
+    --accent-color: #ffffff;
+    --accent-hover-color: #272727;
+    --accent-active-color: #272727;
+
+    --text-color: #ffffff;
+}
+
+html.light-mode {
+    /* Main background */
+    --primary-color: #eef5f0;
+
+    /* Sidebar / cards */
+    --secondary-color: #f8fcf9;
+    --secondary-border-color: #d7e4db;
+
+    /* Buttons / accents */
+    --accent-color: #2f5d46;
+    --accent-hover-color: #e3eee6;
+    --accent-active-color: #d5e5da;
+
+    /* Text */
+    --text-color: #1f3a2d;
+    
+}
+
+input,
+select,
+textarea {
+    color: var(--text-color);
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus {
+    -webkit-text-fill-color: var(--text-color);
+    box-shadow: 0 0 0 1000px var(--primary-color) inset;
+}
+
+    /* Chrome, Safari, Edge, Opera */
+    input[type="number"]::-webkit-outer-spin-button,
+    input[type="number"]::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    /* Firefox */
+    input[type="number"] {
+        -moz-appearance: textfield;
+        appearance: textfield;
+    }

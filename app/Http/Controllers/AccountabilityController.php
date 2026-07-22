@@ -15,11 +15,11 @@ class AccountabilityController extends Controller
     public function index(Request $request)
     {
         $search = $request->input('search');
+        $status = $request->input('status');
+
         $accountability = Accountability::with('inventory')
-            ->whereIn('id', function ($sub) {
-                $sub->selectRaw('MAX(id)')->from('accountability')->groupBy('inventory_id');
-            })
-            // 🔹 existing search
+
+            // Search
             ->when($search, function ($q) use ($search) {
                 $q->where(function ($query) use ($search) {
                     $query
@@ -34,13 +34,36 @@ class AccountabilityController extends Controller
                         });
                 });
             })
+
+            // Accountability Status Filter
+            ->when($status === 'RETURNED', function ($query) {
+                $query->whereNotNull('date_returned');
+            })
+            ->when($status === 'ISSUED', function ($query) {
+                $query->whereNull('date_returned');
+            })
+
             ->orderByDesc('id')
             ->paginate(10)
-            ->withQueryString(); // 🔹 keep filters on pagination
+            ->withQueryString();
 
-        $departments = Accountability::query()->whereNotNull('department')->distinct()->orderBy('department')->pluck('department', 'department');
-        $locations = Accountability::query()->whereNotNull('location')->distinct()->orderBy('location')->pluck('location', 'location');
-        return view('accountability.index', compact('accountability', 'search', 'departments', 'locations'));
+        $departments = Accountability::whereNotNull('department')->distinct()->orderBy('department')->pluck('department', 'department');
+
+        $locations = Accountability::whereNotNull('location')->distinct()->orderBy('location')->pluck('location', 'location');
+
+        $returnedCount = Accountability::whereNotNull('date_returned')->count();
+        
+        $activeCount = Inventory::where('status', 'ACTIVE')->count();
+
+        $defectiveCount = Accountability::whereHas('inventory', function ($query) {
+            $query->where('status', 'DEFECTIVE');
+        })->count();
+
+        $disposedCount = Accountability::whereHas('inventory', function ($query) {
+            $query->where('status', 'DISPOSED');
+        })->count();
+
+        return view('pages.accountability.dashboard', compact('accountability', 'search', 'departments', 'locations', 'returnedCount', 'activeCount', 'defectiveCount', 'disposedCount'));
     }
 
     public function print(Request $request)
@@ -128,7 +151,8 @@ class AccountabilityController extends Controller
             })
             ->when($request->location, function ($query) use ($request) {
                 $query->where('location', $request->location);
-            })->get();
+            })
+            ->get();
 
         // Create spreadsheet
         $spreadsheet = new Spreadsheet();

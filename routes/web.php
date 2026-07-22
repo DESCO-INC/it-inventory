@@ -11,11 +11,12 @@ use App\Http\Controllers\MaintenanceController;
 use App\Http\Controllers\SoftwareController;
 use App\Http\Controllers\InventorySoftwareController;
 
-
 // Auth
 Route::get('/', [SessionController::class, 'index'])->name('login');
-Route::post('/login', [SessionController::class, 'store']);
-Route::post('/logout', [SessionController::class, 'destroy']);
+Route::controller(SessionController::class)->prefix('auth')->name('auth.')->group(function () {
+    Route::post('/login', 'login')->name('login');
+    Route::post('/logout', 'destroy')->name('logout');
+});
 
 Route::get('/register', [RegisterUserController::class, 'index']);
 Route::post('/register', [RegisterUserController::class, 'store']);
@@ -59,6 +60,7 @@ Route::prefix('maintenance')->middleware(['auth'])->controller(MaintenanceContro
     Route::get('/users', 'users')->name('maintenance.users');
     Route::get('/reports', 'reports')->name('maintenance.reports');
     Route::get('/softwares', 'softwares')->name('maintenance.softwares');
+    Route::get('/email', 'email')->name('maintenance.email');
     
     Route::post('/users', 'store')->name('users.store');
     Route::put('/users/{id}', 'update')->name('users.update');
