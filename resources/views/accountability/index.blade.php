@@ -61,17 +61,18 @@
                         @forelse($accountability as $acc)
                             @php
                                 $status = match ($acc->inventory->status) {
-                                    'ACTIVE' => 'bg-green-500/15 text-green-400',
-                                    'DEFECTIVE' => 'bg-yellow-500/15 text-yellow-400',
-                                    'DISPOSED' => 'bg-red-500/15 text-red-400',
-                                    default => 'bg-gray-500/15 text-gray-400',
+                                    'ACTIVE' => 'bg-[var(--success-color)]/70 text-[var(--text-color)]',
+                                    'DEFECTIVE' => 'bg-[var(--warning-color)]/70 text-[var(--text-color)]',
+                                    'DISPOSED' => 'bg-[var(--danger-color)]/70 text-[var(--text-color)]',
+                                    default => 'bg-[var(--text-muted-color)]/70 text-[var(--text-color)]',
                                 };
+
                                 $accstatus = $acc->date_returned ? 'RETURNED' : 'ISSUED';
 
                                 $accstatusbadge = match ($accstatus) {
-                                    'ISSUED' => 'bg-green-500/15 text-green-400',
-                                    'RETURNED' => 'bg-yellow-500/15 text-yellow-400',
-                                    default => 'bg-gray-500/15 text-gray-400',
+                                    'ISSUED' => 'bg-[var(--success-color)]/70 text-[var(--text-color)]',
+                                    'RETURNED' => 'bg-[var(--warning-color)]/70 text-[var(--text-color)]',
+                                    default => 'bg-[var(--text-muted-color)]/70 text-[var(--text-color)]',
                                 };
                             @endphp
 

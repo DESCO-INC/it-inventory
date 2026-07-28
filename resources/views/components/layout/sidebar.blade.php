@@ -9,10 +9,10 @@
 
         <div class="flex items-center gap-3">
 
-            <div
+            <a href="{{ route('inventory.index') }}"
                 class="flex items-center justify-center w-9 h-9 rounded-md bg-[var(--primary-color)] text-[var(--accent-color)] shadow">
                 <x-heroicon-o-cpu-chip class="w-5 h-5" />
-            </div>
+            </a>
 
             <h1 id="sidebarTitle"
                 class="text-md font-semibold tracking-wide text-[var(--secondary-color)] t[ransition-all">
@@ -62,9 +62,10 @@
             @endphp
 
             <div id="maintenanceMenu" class="{{ $isMaintenanceOpen ? '' : 'hidden' }} flex flex-col ml-4 gap-1">
-                <x-layout.sidebar-link route="#" label="Audit Trail" icon="heroicon-s-clock" />
+                <x-layout.sidebar-link route="audit.index" label="Audit Trail" icon="heroicon-s-clock" />
                 <x-layout.sidebar-link route="user.index" label="User Maintenance" icon="heroicon-s-users" />
-                <x-layout.sidebar-link route="software.maintenance" label="Software Maintenance" icon="heroicon-s-wrench" />
+                <x-layout.sidebar-link route="software.maintenance" label="Software Maintenance"
+                    icon="heroicon-s-wrench" />
             </div>
         </div>
 

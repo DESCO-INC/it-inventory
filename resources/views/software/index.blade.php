@@ -55,11 +55,11 @@
                         @forelse($softwares as $software)
                             @php
                                 $variant = match ($software->status) {
-                                    'NO EXPIRY' => 'bg-gray-500/15 text-gray-400',
-                                    'EXPIRED' => 'bg-red-500/15 text-red-400',
-                                    'EXPIRING' => 'bg-yellow-500/15 text-yellow-400',
-                                    'ACTIVE' => 'bg-green-500/15 text-green-400',
-                                    default => 'bg-gray-500/15 text-gray-400',
+                                    'NO EXPIRY' => 'bg-[var(--text-muted-color)]/70 text-[var(--text-color)]',
+                                    'EXPIRED' => 'bg-[var(--danger-color)]/70 text-[var(--text-color)]',
+                                    'EXPIRING' => 'bg-[var(--warning-color)]/70 text-[var(--text-color)]',
+                                    'ACTIVE' => 'bg-[var(--success-color)]/70 text-[var(--text-color)]',
+                                    default => 'bg-[var(--text-muted-color)]/70 text-[var(--text-color)]',
                                 };
                             @endphp
 
@@ -76,9 +76,14 @@
                                         {{ $software->status }}
                                     </span>
                                 </td>
-                                <td class="px-4 py-3 text-xs text-gray-800">{{ $software->remarks }}</td>
+                                <td class="px-4 py-3 text-xs text-gray-800">
+                                    <div class="max-w-xs truncate" title="{{ $software->remarks }}">
+                                        {{ $software->remarks }}
+                                    </div>
+                                </td>
                                 <td class="px-4 py-2 text-center flex justify-center gap-1">
-                                    <x-link size="sm" href="{{ route('inventory.edit', $software->inventory->id) }}">
+                                    <x-link size="sm"
+                                        href="{{ route('inventory.edit', $software->inventory->id) }}">
                                         Manage
                                     </x-link>
                                 </td>

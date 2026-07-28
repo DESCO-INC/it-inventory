@@ -55,7 +55,7 @@
             <x-heroicon-o-users class="absolute -right-4 -bottom-4 w-24 h-24" />
 
             <div class="relative z-10 flex flex-col h-full">
-                <span class="text-sm font-medium">  
+                <span class="text-sm font-medium">
                     Unassigned Items
                 </span>
 
@@ -155,16 +155,16 @@
                         @forelse($units as $unit)
                             @php
                                 $unit_status = match ($unit->status) {
-                                    'ACTIVE' => 'bg-green-500/15 text-green-400',
-                                    'DEFECTIVE' => 'bg-yellow-500/15 text-yellow-400',
-                                    'DISPOSED' => 'bg-red-500/15 text-red-400',
-                                    default => 'bg-gray-500/15 text-gray-400',
+                                    'ACTIVE' => 'bg-[var(--success-color)]/70 text-[var(--text-color)]',
+                                    'DEFECTIVE' => 'bg-[var(--warning-color)]/70 text-[var(--text-color)]',
+                                    'DISPOSED' => 'bg-[var(--danger-color)]/70 text-[var(--text-color)]',
+                                    default => 'bg-[var(--text-muted-color)]/70 text-[var(--text-color)]',
                                 };
 
                                 $acc_status = match ($unit->accountability_status) {
-                                    'ASSIGNED' => 'bg-green-500/15 text-green-400',
-                                    'UNASSIGNED' => 'bg-yellow-500/15 text-yellow-400',
-                                    default => 'bg-gray-500/15 text-gray-400',
+                                    'ASSIGNED' => 'bg-[var(--success-color)]/70 text-[var(--text-color)]',
+                                    'UNASSIGNED' => 'bg-[var(--warning-color)]/70 text-[var(--text-color)]',
+                                    default => 'bg-[var(--text-muted-color)]/70 text-[var(--text-color)]',
                                 };
                             @endphp
 

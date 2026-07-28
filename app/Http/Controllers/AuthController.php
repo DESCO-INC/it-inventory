@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 
+use App\Models\AuditTrail;
+
 class AuthController extends Controller
 {
     public function index()
@@ -32,18 +34,18 @@ class AuthController extends Controller
 
         request()->session()->regenerate();
 
-        // AuditTrail::create([
-        //     'user_id' => Auth::id(),
-        //     'action' => 'login',
-        //     'model' => 'User',
-        //     'model_id' => Auth::id(),
-        //     'old_values' => null,
-        //     'new_values' => [
-        //         'ip_address' => request()->ip(),
-        //         'user_agent' => request()->userAgent(),
-        //         'logged_in_at' => now(),
-        //     ],
-        // ]);
+        AuditTrail::create([
+            'user_id' => Auth::id(),
+            'action' => 'login',
+            'model' => 'User',
+            'model_id' => Auth::id(),
+            'old_values' => null,
+            'new_values' => [
+                'ip_address' => request()->ip(),
+                'user_agent' => request()->userAgent(),
+                'logged_in_at' => now(),
+            ],
+        ]);
 
         $redirect = Auth::user()->credential === 'ADMIN' ? '/inventory' : '/accountability';
         return redirect()->intended($redirect)->with('success', 'Login successful! Welcome 🎉');
@@ -51,18 +53,18 @@ class AuthController extends Controller
 
     public function destroy()
     {
-        // AuditTrail::create([
-        //     'user_id' => Auth::id(),
-        //     'action' => 'logout',
-        //     'model' => 'User',
-        //     'model_id' => Auth::id(),
-        //     'old_values' => null,
-        //     'new_values' => [
-        //         'ip_address' => request()->ip(),
-        //         'user_agent' => request()->userAgent(),
-        //         'logged_out_at' => now(),
-        //     ],
-        // ]);
+        AuditTrail::create([
+            'user_id' => Auth::id(),
+            'action' => 'logout',
+            'model' => 'User',
+            'model_id' => Auth::id(),
+            'old_values' => null,
+            'new_values' => [
+                'ip_address' => request()->ip(),
+                'user_agent' => request()->userAgent(),
+                'logged_out_at' => now(),
+            ],
+        ]);
 
         Auth::logout();
         request()->session()->invalidate();

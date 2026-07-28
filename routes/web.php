@@ -10,6 +10,7 @@ use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\AccountabilityController;
 use App\Http\Controllers\SoftwareController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\AuditTrailController;
 
 // Auth
 Route::get('/', [AuthController::class, 'index'])->name('login');
@@ -36,3 +37,6 @@ Route::get('/user/profile', [UserController::class, 'profile'])->name('user.prof
 // SoftwareInventory
 Route::resource('inventory_software', InventorySoftwareController::class)->except(['show'])->middleware('auth');
 Route::get('/inventory_software/notification', [InventorySoftwareController::class, 'sendNotification'])->name('inventory_software.notification');
+
+// Audit Trail
+Route::resource('audit', AuditTrailController::class)->except(['show'])->middleware('auth');
