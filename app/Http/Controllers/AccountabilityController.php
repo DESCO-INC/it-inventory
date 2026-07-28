@@ -63,7 +63,7 @@ class AccountabilityController extends Controller
             $query->where('status', 'DISPOSED');
         })->count();
 
-        return view('pages.accountability.dashboard', compact('accountability', 'search', 'departments', 'locations', 'returnedCount', 'activeCount', 'defectiveCount', 'disposedCount'));
+        return view('accountability.index', compact('accountability', 'search', 'departments', 'locations', 'returnedCount', 'activeCount', 'defectiveCount', 'disposedCount'));
     }
 
     public function print(Request $request)
@@ -129,10 +129,10 @@ class AccountabilityController extends Controller
             $accountability->delete();
 
             // redirect to the unit edit page
-            return redirect()->route('units.edit', $unitId)->with('success', 'Accountability deleted successfully.');
+            return redirect()->route('inventory.edit', $unitId)->with('success', 'Accountability deleted successfully.');
         } catch (\Exception $e) {
             // redirect to the unit edit page even if delete fails
-            return redirect()->route('units.edit', $accountability->inventory_id)->with('error', 'Failed to delete accountability. Please try again.');
+            return redirect()->route('inventory.edit', $accountability->inventory_id)->with('error', 'Failed to delete accountability. Please try again.');
         }
     }
 

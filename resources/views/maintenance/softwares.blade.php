@@ -1,35 +1,48 @@
 <x-layout>
-    <x-card class="mb-2">
-        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between">
-            <h2 class="text-lg font-medium text-gray-800">Manage Software</h2>
-
-            <div class="flex gap-2 mt-4 sm:mt-0">
-                {{-- <x-button size="sm" href="{{ route('manlist.create') }}"> --}}
-                <x-button size="sm" onclick="toggleModal('add-modal')">
-                    Add Software
-                </x-button>
-
-                <x-button size="sm" id="btn_back" href="{{ route('units.index') }}" variant="gray">
-                    Back
-                </x-button>
-            </div>
+    {{-- Header --}}
+    <div class="flex items-center justify-between mb-6 text-white">
+        <div>
+            <h1 class="text-2xl font-bold text-[var(--text-color)]">Manage Software</h1>
+            <p class="text-sm text-[var(--text-muted-color)]">
+                Add, update, and manage software records, including license information,installation details, and
+                expiration dates.
+            </p>
         </div>
-    </x-card>
 
-    <x-card class="mb-2">
+        <div class="flex gap-2">
+            <x-button size="md" onclick="toggleModal('add-modal')">
+                Add Software
+            </x-button>
+        </div>
+    </div>
+
+    <div class="mb-2 bg-white rounded-lg shadow-sm overflow-hidden px-6 py-4">
         <div class="overflow-x-auto">
-            <form method="GET" class="mb-4 flex items-center gap-2">
-                <input name="search" id="search" type="text"
-                    class="border border-gray-300 rounded-md px-3 py-1 text-sm text-gray-700 focus:ring-2 focus:ring-green-500 focus:border-green-500 min-w-[150px]"
-                    placeholder="Search Here" value="{{ request('search') }}" />
+            {{-- SEARCH --}}
+            <div class="flex justify-between">
+                <form method="GET" class="mb-4 flex items-center gap-2">
+                    <input name="search" id="search" type="text"
+                        class="border border-gray-300 rounded-md px-3 py-1 text-sm text-gray-700"
+                        placeholder="Search Here" value="{{ request('search') }}" />
 
-                <button class="bg-green-500 text-white text-xs px-2 py-1 rounded hover:bg-green-600" type="submit">
-                    Search
-                </button>
-            </form>
+                    <x-button type="submit" size="sm">Search</x-button>
+                    @if (request('search'))
+                        <x-link size="sm" bg="bg-[var(--primary-color)]" border="border-[var(--text-muted-color)]"
+                            text="text-[var(--text-color)]" href="{{ url()->current() }}">
+                            Clear
+                        </x-link>
+                    @endif
+                </form>
+
+                <h2 class="text-sm font-semibold text-[var(--text-muted-color)] leading-none">
+                    User List
+                </h2>
+            </div>
+
+            {{-- TABLE --}}
             <div class="overflow-x-auto border border-gray-200 rounded">
                 <table class="min-w-full divide-y divide-gray-200 text-sm table-auto">
-                    <thead class="bg-green-500 text-white">
+                    <thead class="bg-[var(--table-header-bg)] text-[var(--table-header-text)]">
                         <tr>
                             <th class="px-4 py-3 text-left text-sm font-medium">ID</th>
                             <th class="px-4 py-3 text-left text-sm font-medium">Name</th>
@@ -51,21 +64,19 @@
                                 <td class="px-4 py-3 text-xs text-gray-800">{{ $software->created_at }}</td>
                                 <td class="px-4 py-3 text-xs text-gray-800">{{ $software->created_by }}</td>
                                 <td class="px-4 py-2 text-center flex justify-center gap-1">
-                                    <x-button size="xs" variant="info" class="btn-edit"
-                                        data-id="{{ $software->id }}" data-name="{{ $software->name }}"
-                                        data-supplier="{{ $software->supplier }}"
-                                        data-category="{{ $software->category }}">
+                                    <x-button size="sm" onclick="openEditModal({{ $software }})">
                                         Edit
                                     </x-button>
-                                    <x-button size="xs" variant="error" class="btn-delete"
-                                        data-id="{{ $software->id }}" data-name="{{ $software->name }}">
+                                    <x-button size="sm" bg="bg-[var(--danger-color)]"
+                                        onclick="openDeleteModal({{ $software->id }})">
                                         Delete
                                     </x-button>
                                 </td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="10" class="px-4 py-2 text-center text-gray-500">No records found.</td>
+                                <td colspan="10" class="px-4 py-2 text-center text-gray-500">No records found.
+                                </td>
                             </tr>
                         @endforelse
                     </tbody>
@@ -77,32 +88,54 @@
                 {{ $softwares->appends(['search' => $search])->links() }}
             </div>
         </div>
-    </x-card>
+    </div>
 
     <!-- Add Modal -->
     <div id="add-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm bg-black/30">
-        <div class="bg-white rounded-lg shadow-xl w-full max-w-md p-6 relative">
-            <h2 class="text-xl font-semibold text-gray-800">Add Software</h2>
-            <p class="mt-2 text-sm text-gray-600">Please fill out the form</p>
 
-            {{-- action="{{ route('manlist.import') }}" --}}
-            <form id="add-form" method="POST" action="{{ route('software.store') }}" enctype="multipart/form-data"
-                class="mt-4">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-md p-6">
+
+            <form id="add-form" method="POST" action="{{ route('software.store') }}" enctype="multipart/form-data">
                 @csrf
 
-                <x-input label="Name" name="name" placeholder="Ex: Solidworks" class="w-full mb-2" required />
-                <x-input label="Supplier" name="supplier" placeholder="Ex: Desco" class="w-full mb-2" required />
-                <x-select label="Plan Category" name="category" :options="['' => 'Select Category', 'SUBSCRIPTION' => 'SUBSCRIPTION', 'PERPETUAL' => 'PERPETUAL']" width="full mb-2" required />
+                <div>
+                    <h2 class="text-lg font-semibold text-gray-800">
+                        Add Software
+                    </h2>
 
-                <div class="mt-6 flex justify-end space-x-3">
-                    <!-- Cancel -->
-                    <x-button size="md" variant="gray" onclick="toggleModal('add-modal')">
+                    <p class="mt-1 text-sm text-gray-600">
+                        Fill in the software details below.
+                    </p>
+                </div>
+
+                <div class="mt-6 space-y-4">
+
+                    <x-input label="Name" name="name" placeholder="Ex: SolidWorks" required />
+
+                    <x-input label="Supplier" name="supplier" placeholder="Ex: DESCO" required />
+
+                    <x-select label="Plan Category" name="category" required>
+                        <option value="">Select Category</option>
+                        <option value="SUBSCRIPTION" @selected(old('category') == 'SUBSCRIPTION')>
+                            SUBSCRIPTION
+                        </option>
+                        <option value="PERPETUAL" @selected(old('category') == 'PERPETUAL')>
+                            PERPETUAL
+                        </option>
+                    </x-select>
+
+                </div>
+
+                <div class="mt-6 flex justify-end gap-3">
+
+                    <x-button type="button" size="md" bg="bg-[var(--primary-color)]"
+                        border="border-[var(--text-muted-color)]" text="text-[var(--text-color)]"
+                        onclick="toggleModal('add-modal')">
                         Cancel
                     </x-button>
 
-                    <!-- Add Button -->
-                    <x-button size="md" type="submit">
-                        Submit
+                    <x-button type="submit" size="md" bg="bg-[var(--accent-color)]">
+                        Save Software
                     </x-button>
                 </div>
             </form>
@@ -112,28 +145,45 @@
     <!-- Edit Modal -->
     <div id="edit-modal"
         class="hidden fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm bg-black/30">
-
         <div class="bg-white rounded-lg shadow-xl w-full max-w-md p-6">
-            <h2 class="text-xl font-semibold text-gray-800">Edit Software</h2>
-
-            <form id="edit-form" method="POST" class="mt-4">
+            <form id="edit-form" method="POST">
                 @csrf
                 @method('PUT')
 
-                <x-input label="Name" id="edit-name" name="name" placeholder="Ex: Solidworks" class="w-full mb-2"
-                    required />
-                <x-input label="Supplier" id="edit-supplier" name="supplier" placeholder="Ex: Desco" class="w-full mb-2"
-                    required />
-                <x-select label="Plan Category" id="edit-category" name="category" :options="['' => 'Select Category', 'SUBSCRIPTION' => 'SUBSCRIPTION', 'PERPETUAL' => 'PERPETUAL']"
-                    width="full mb-2" required />
+                <div>
+                    <h2 class="text-lg font-semibold text-gray-800">
+                        Edit Software
+                    </h2>
 
-                <div class="mt-6 flex justify-end space-x-3">
-                    <x-button size="md" variant="gray" onclick="toggleModal('edit-modal')">
+                    <p class="mt-1 text-sm text-gray-600">
+                        Update the software details below.
+                    </p>
+                </div>
+
+                <div class="mt-6 space-y-4">
+
+                    <x-input id="edit-name" label="Name" name="name" placeholder="Ex: SolidWorks" required />
+
+                    <x-input id="edit-supplier" label="Supplier" name="supplier" placeholder="Ex: DESCO" required />
+
+                    <x-select id="edit-category" label="Plan Category" name="category" required>
+                        <option value="">Select Category</option>
+                        <option value="SUBSCRIPTION">SUBSCRIPTION</option>
+                        <option value="PERPETUAL">PERPETUAL</option>
+                    </x-select>
+
+                </div>
+
+                <div class="mt-6 flex justify-end gap-3">
+
+                    <x-button type="button" size="md" bg="bg-[var(--primary-color)]"
+                        border="border-[var(--text-muted-color)]" text="text-[var(--text-color)]"
+                        onclick="toggleModal('edit-modal')">
                         Cancel
                     </x-button>
 
-                    <x-button size="md" type="submit">
-                        Update
+                    <x-button type="submit" size="md" bg="bg-[var(--accent-color)]">
+                        Save Changes
                     </x-button>
                 </div>
             </form>
@@ -143,22 +193,35 @@
     <!-- Delete Modal -->
     <div id="delete-modal"
         class="hidden fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm bg-black/30">
-        <div class="bg-white rounded-lg shadow-xl w-full max-w-md p-6">
-            <h2 class="text-xl font-semibold text-gray-800">Delete Software</h2>
-            <p class="mt-2 text-sm text-gray-600">
-                Are you sure you want to delete <span id="delete-software-name" class="font-semibold"></span>?
-            </p>
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-sm p-6">
+            <div>
+                <h2 class="text-lg font-semibold text-gray-800">
+                    Delete Software
+                </h2>
 
-            <form id="delete-form" method="POST" class="mt-4">
+                <p class="mt-1 text-sm text-gray-600">
+                    Are you sure you want to delete
+                    <span id="delete-software-name" class="font-semibold text-gray-800"></span>?
+                </p>
+
+                <p class="mt-3 text-sm text-red-600">
+                    This action cannot be undone. Once deleted, the software record
+                    will be permanently removed.
+                </p>
+            </div>
+
+            <form id="delete-form" method="POST" class="mt-6">
                 @csrf
                 @method('DELETE')
+                <div class="flex justify-end gap-3">
 
-                <div class="mt-6 flex justify-end space-x-3">
-                    <x-button size="md" variant="gray" onclick="toggleModal('delete-modal')">
+                    <x-button type="button" size="md" bg="bg-[var(--primary-color)]"
+                        border="border-[var(--text-muted-color)]" text="text-[var(--text-color)]"
+                        onclick="toggleModal('delete-modal')">
                         Cancel
                     </x-button>
 
-                    <x-button size="md" type="submit" variant="error">
+                    <x-button type="submit" size="md" bg="bg-[var(--danger-color)]">
                         Delete
                     </x-button>
                 </div>
@@ -167,63 +230,23 @@
     </div>
 
     <script>
-        $(document).ready(function() {
-            $('#add-form').on('submit', function() {
-                const $submit = $(this).find('button[type="submit"]');
-                $submit.prop('disabled', true).text('Submitting...');
-            });
-        });
-    </script>
-    
-    <script>
         function toggleModal(modalId) {
             $('#' + modalId).toggleClass('hidden');
         }
 
-        // OPEN EDIT MODAL
-        $(document).on('click', '.btn-edit', function() {
-            const editRouteTemplate = "{{ route('software.update', ['software' => ':id']) }}";
-            let id = $(this).data('id');
-            let name = $(this).data('name');
-            let supplier = $(this).data('supplier');
-            let category = $(this).data('category');
+        function openEditModal(software) {
+            $('#edit-form').attr('action', '{{ route('software.update', ':id') }}'.replace(':id', software.id));
 
-            // Fill form fields
-            $('#edit-name').val(name);
-            $('#edit-supplier').val(supplier);
-            $('#edit-category').val(category);
+            $('#edit-name').val(software.name);
+            $('#edit-supplier').val(software.supplier);
+            $('#edit-category').val(software.category);
+            $('#edit-modal').toggleClass('hidden');
+        }
 
-            const editRoute = editRouteTemplate.replace(':id', id);
-            $('#edit-form').attr('action', editRoute);
-            toggleModal('edit-modal');
-        });
-
-        // OPEN DELETE MODAL
-        $(document).on('click', '.btn-delete', function() {
-            const destroyRouteTemplate = "{{ route('software.destroy', ['software' => ':id']) }}";
-            let id = $(this).data('id');
-            let name = $(this).data('name');
-            $('#delete-software-name').text(name);
-
-            // set form action dynamically
-            const destroyRoute = destroyRouteTemplate.replace(':id', id);
-            $('#delete-form').attr('action', destroyRoute);
-
-            // open modal
-            toggleModal('delete-modal');
-        });
-
-        function clearFormInput() {
-            // Clear Add Form
-            $('#add-form').find('input[type="text"], input[type="email"], input[type="password"]').val('');
-            $('#add-form').find('select').prop('selectedIndex', 0);
-            $('#add-form').find('input[name="_modal"]').val('add');
-
-            // Clear Edit Form
-            $('#edit-form').find('input[type="text"], input[type="email"], input[type="password"]').val('');
-            $('#edit-form').find('select').prop('selectedIndex', 0);
-            $('#edit-form').find('input[name="_modal"]').val('edit');
-            $('#edit-form').find('input[name="_id"]').val('');
+        function openDeleteModal(id) {
+            let action = "{{ route('software.destroy', ':id') }}".replace(':id', id);
+            $('#delete-form').attr('action', action);
+            $('#delete-modal').toggleClass('hidden');
         }
     </script>
 

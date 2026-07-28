@@ -3,66 +3,36 @@
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Mail;
 
-use App\Http\Controllers\SessionController;
-use App\Http\Controllers\RegisterUserController;
-use App\Http\Controllers\UnitController;
-use App\Http\Controllers\AccountabilityController;
-use App\Http\Controllers\MaintenanceController;
-use App\Http\Controllers\SoftwareController;
 use App\Http\Controllers\InventorySoftwareController;
 
-// Auth
-Route::get('/', [SessionController::class, 'index'])->name('login');
-Route::controller(SessionController::class)->prefix('auth')->name('auth.')->group(function () {
-    Route::post('/login', 'login')->name('login');
-    Route::post('/logout', 'destroy')->name('logout');
-});
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\InventoryController;
+use App\Http\Controllers\AccountabilityController;
+use App\Http\Controllers\SoftwareController;
+use App\Http\Controllers\UserController;
 
-Route::get('/register', [RegisterUserController::class, 'index']);
-Route::post('/register', [RegisterUserController::class, 'store']);
+// Auth
+Route::get('/', [AuthController::class, 'index'])->name('login');
+Route::post('/login', [AuthController::class, 'store']);
+Route::post('/logout', [AuthController::class, 'destroy'])->name('logout');
+
+// Inventory Controller
+Route::resource('inventory', InventoryController::class)->except(['show'])->middleware('auth');
+Route::post('/inventory/import', [InventoryController::class, 'import'])->name('inventory.import');
+
+// Accountability Controller
+Route::resource('accountability', AccountabilityController::class)->except(['show'])->middleware('auth');
+Route::get('/accountability/print', [AccountabilityController::class, 'print'])->name('accountability.print');
+Route::get('/accountability/export', [AccountabilityController::class, 'export'])->name('accountability.export');
 
 // Software
 Route::resource('software', SoftwareController::class)->except(['show'])->middleware('auth');
+Route::get('/software/maintenance', [SoftwareController::class, 'maintenance'])->name('software.maintenance');
+
+// User Maintenance
+Route::resource('user', UserController::class)->except(['show'])->middleware('auth');
+Route::get('/user/profile', [UserController::class, 'profile'])->name('user.profile');
 
 // SoftwareInventory
 Route::resource('inventory_software', InventorySoftwareController::class)->except(['show'])->middleware('auth');
-
-Route::prefix('inventory_software')->controller(InventorySoftwareController::class)->group(function () {
-    Route::get('/notification', 'sendNotification')->name('inventory_software.notification');
-});
-
-Route::prefix('units')->middleware(['auth'])->controller(UnitController::class)->group(function () {
-    Route::get('/', 'index')->name('units.index');
-    Route::get('/create', 'create')->name('units.create');
-    Route::post('/', 'store')->name('units.store'); // <-- Add this
-    Route::get('/{unit}/edit', 'edit')->name('units.edit');
-    Route::put('/{unit}/update', 'update')->name('units.update');
-    Route::delete('/{unit}/destroy', 'destroy')->name('units.destroy');
-
-    
-    Route::get('/next-control/{categoryId}', 'getNextControlNo')->name('units.getNextControlNo');
-});
-
-Route::post('/inventory/import', [UnitController::class, 'import'])->name('inventory.import');
-
-Route::prefix('accountability')->middleware(['auth'])->controller(AccountabilityController::class)->group(function () {
-    Route::get('/', 'index')->name('accountability.index');
-    Route::post('/store', 'store')->name('accountability.store');
-    Route::put('/{id}', 'update')->name('accountability.update'); 
-    Route::delete('/{id}/destroy', 'destroy')->name('accountability.destroy');
-
-    Route::get('/print', 'print')->name('accountability.print');
-    Route::get('/export', 'export')->name('accountability.export');
-});
-
-
-Route::prefix('maintenance')->middleware(['auth'])->controller(MaintenanceController::class)->group(function () {
-    Route::get('/users', 'users')->name('maintenance.users');
-    Route::get('/reports', 'reports')->name('maintenance.reports');
-    Route::get('/softwares', 'softwares')->name('maintenance.softwares');
-    Route::get('/email', 'email')->name('maintenance.email');
-    
-    Route::post('/users', 'store')->name('users.store');
-    Route::put('/users/{id}', 'update')->name('users.update');
-    Route::delete('/users/{id}', 'destroy')->name('users.destroy');
-});
+Route::get('/inventory_software/notification', [InventorySoftwareController::class, 'sendNotification'])->name('inventory_software.notification');

@@ -15,8 +15,8 @@
 <a href="{{ $href }}" id="{{ $id ?? '' }}"
     class="flex items-center px-2.5 py-1.5 text-sm rounded-md transition-colors duration-200
     {{ $active
-        ? 'bg-[var(--color-secondary)] text-[var(--color-primary)]'
-        : 'text-[var(--color-secondary)] hover:bg-[var(--color-secondary)] hover:text-[var(--color-primary)]' }}">
+        ? 'bg-[var(--sidebar-active)] text-[var(--primary-color)]'
+        : 'text-[var(--primary-color)] hover:bg-[var(--sidebar-hover)] hover:text-[var(--primary-color)]' }}">
 
     @if ($icon)
         <x-dynamic-component :component="$icon" class="w-4 h-4 mr-2" />

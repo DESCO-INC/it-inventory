@@ -1,38 +1,32 @@
 @props([
-    'label' => null,
-    'name',
     'id' => null,
+    'name',
     'type' => 'text',
-    'value' => '',
-    'wrapperClass' => '',
+    'value' => null,
+    'label' => null,
 ])
 
-@php
-    $id = $id ?? $name;
-@endphp
-
-<div class="{{ $wrapperClass }}">
-    @if ($label)
-        <label
-            for="{{ $id }}"
-            class="block mb-2 text-sm font-medium text-[var(--text-color)]">
+<div>
+    @if($label)
+        <label for="{{ $id ?? $name }}" class="block text-sm font-medium text-gray-700">
             {{ $label }}
         </label>
     @endif
 
     <input
-        id="{{ $id }}"
+        id="{{ $id ?? $name }}"
         name="{{ $name }}"
         type="{{ $type }}"
         value="{{ old($name, $value) }}"
-        {{ $attributes->merge([
-            'class' => 'w-full px-4 py-2 rounded-lg bg-[var(--primary-color)] border border-[var(--secondary-border-color)] text-[var(--text-color)] placeholder:text-[var(--text-color)]/40 focus:outline-none focus:ring-2 focus:ring-[var(--accent-color)] focus:border-transparent',
+
+        {{ $attributes->class([
+            'w-full mt-1 rounded-lg border px-2 py-1.5 text-sm transition duration-200 focus:outline-none',
+            'border-red-500 focus:border-red-500 focus:ring-red-500' => $errors->has($name),
+            'border-gray-300 focus:border-[var(--accent-color)] focus:ring-[var(--accent-color)]' => ! $errors->has($name),
         ]) }}
     >
 
     @error($name)
-        <p class="mt-1 text-sm text-red-400">
-            {{ $message }}
-        </p>
+        <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
     @enderror
 </div>

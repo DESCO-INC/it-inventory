@@ -8,12 +8,10 @@ use Illuminate\Support\Facades\Hash; // For password hashing
 use Illuminate\Validation\Rule;
 
 use App\Models\User;
-use App\Models\Software;
 
-class MaintenanceController extends Controller
+class UserController extends Controller
 {
-    // Show users with search and pagination
-    public function users(Request $request)
+    public function index(Request $request)
     {
         // Only allow ADMIN users
         if (!Auth::check() || Auth::user()->credential !== 'ADMIN') {
@@ -33,7 +31,7 @@ class MaintenanceController extends Controller
 
         $users = $query->orderByDesc('id')->paginate(10)->withQueryString();
 
-        return view('pages.maintenance.user', compact('users', 'search'));
+        return view('maintenance.users', compact('users', 'search'));
     }
 
     public function store(Request $request)
@@ -42,7 +40,7 @@ class MaintenanceController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
             'credential' => 'nullable|string|max:255',
-            'password' => 'required|string|min:5|confirmed', // expects password_confirmation
+            'password' => 'required|string|min:5|confirmed',
         ]);
 
         User::create([
@@ -55,7 +53,6 @@ class MaintenanceController extends Controller
         return back()->with('success', 'User added successfully!');
     }
 
-    // Update existing user
     public function update(Request $request, $id)
     {
         $user = User::findOrFail($id);
@@ -79,7 +76,6 @@ class MaintenanceController extends Controller
         return back()->with('success', 'User updated successfully!');
     }
 
-    // Delete user
     public function destroy($id)
     {
         $user = User::findOrFail($id);
@@ -88,30 +84,8 @@ class MaintenanceController extends Controller
         return back()->with('success', 'User deleted successfully!');
     }
 
-    // Reports
-    public function reports()
+    public function profile()
     {
-        $count = Inventory::count();
-        return view('maintenance.reports', compact('count'));
-    }
-
-    public function softwares(Request $request)
-    {
-        $search = $request->input('search');
-
-        $query = Software::when($search, function ($q) use ($search) {
-            $q->where(function ($query) use ($search) {
-                $query->where('name', 'like', "%{$search}%")->orWhere('supplier', 'like', "%{$search}%");
-            });
-        });
-
-        $softwares = $query->orderBy('id', 'desc')->paginate(10);
-        return view('pages.maintenance.software', compact('softwares', 'search'));
-    }
-
-    public function email()
-    {
-        $users = User::select('name', 'email')->get();
-        return view('maintenance.email', compact('users'));
+        return view('maintenance.profile');
     }
 }

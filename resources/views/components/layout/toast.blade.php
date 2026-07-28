@@ -2,6 +2,16 @@
 
 <div id="toast-container" class="fixed top-5 right-5 z-50 space-y-3 w-80"></div>
 
+@if ($errors->any())
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const modal = document.getElementById('addModal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        });
+    </script>
+@endif
+
 @if (session('success'))
     <script>
         window.addEventListener('DOMContentLoaded', () => {
@@ -30,17 +40,6 @@
     <script>
         window.addEventListener('DOMContentLoaded', () => {
             window.showToast('warning', @json(session('warning')));
-        });
-    </script>
-@endif
-
-@if ($errors->any())
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            window.showToast(
-                'warning',
-                @json($errors->first())
-            );
         });
     </script>
 @endif

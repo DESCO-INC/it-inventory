@@ -17,7 +17,7 @@ use App\Models\Software;
 
 use App\Imports\InventoryImport;
 
-class UnitController extends Controller
+class InventoryController extends Controller
 {
     public function index(Request $request)
     {
@@ -68,13 +68,13 @@ class UnitController extends Controller
 
         $stats = Inventory::stats();
 
-        return view('pages.inventory.dashboard', compact('units', 'search', 'stats', 'expired_count', 'expiring_count'));
+        return view('inventory.index', compact('units', 'search', 'stats', 'expired_count', 'expiring_count'));
     }
 
     public function create()
     {
         $category = UnitCategory::get();
-        return view('pages.inventory.create', [
+        return view('inventory.create', [
             'category' => $category,
         ]);
     }
@@ -99,20 +99,20 @@ class UnitController extends Controller
         $validated['created_by'] = Auth::user()->name ?? 'System';
 
         $inventory = Inventory::create($validated);
-        return redirect()->route('units.index')->with('success', 'New item has been successfully added!');
+        return redirect()->route('inventory.index')->with('success', 'New item has been successfully added!');
     }
 
-    public function edit(Inventory $unit)
+    public function edit(Inventory $inventory)
     {
         $category = UnitCategory::get();
-        $accountability = Accountability::where('inventory_id', $unit->id)->orderByDesc('id')->get();
+        $accountability = Accountability::where('inventory_id', $inventory->id)->orderByDesc('id')->get();
         $department = Department::pluck('department');
         $softwareLists = Software::get();
-        $software = InventorySoftware::with('software')->where('inventory_id', $unit->id)->get();
-        return view('pages.inventory.edit', compact('unit', 'category', 'accountability', 'department', 'software', 'softwareLists'));
+        $software = InventorySoftware::with('software')->where('inventory_id', $inventory->id)->get();
+        return view('inventory.edit', compact('inventory', 'category', 'accountability', 'department', 'software', 'softwareLists'));
     }
 
-    public function update(Request $request, Inventory $unit)
+    public function update(Request $request, Inventory $inventory)
     {
         $validated = $request->validate([
             'serial' => 'nullable|string|max:255',
@@ -126,7 +126,7 @@ class UnitController extends Controller
             'disposed_location' => 'nullable|string|max:255',
         ]);
 
-        $unit->update($validated);
+        $inventory->update($validated);
 
         return back()->with('success', 'Unit information updated successfully.');
     }
@@ -137,9 +137,9 @@ class UnitController extends Controller
 
         try {
             $unit->delete();
-            return redirect()->route('units.index')->with('success', 'Unit deleted successfully.');
+            return redirect()->route('inventory.index')->with('success', 'Unit deleted successfully.');
         } catch (\Exception $e) {
-            return redirect()->route('units.index')->with('error', 'Failed to delete unit. Please try again.');
+            return redirect()->route('inventory.index')->with('error', 'Failed to delete unit. Please try again.');
         }
     }
 
@@ -152,25 +152,5 @@ class UnitController extends Controller
         Excel::import(new InventoryImport(), $request->file('file'));
 
         return back()->with('success', 'Inventory imported successfully!');
-    }
-
-    public function getNextControlNo($categoryId)
-    {
-        // Get the unit category
-        $category = \App\Models\UnitCategory::findOrFail($categoryId);
-
-        // Get the next inventory ID (assuming 'id' is auto-increment in inventory table)
-        $nextId = \App\Models\Inventory::max('id') + 1;
-
-        // Count existing inventories for this category
-        $totalSameCategory = \App\Models\Inventory::where('unit_category_id', $categoryId)->count();
-
-        // Prepare the response
-        return response()->json([
-            'code' => $category->code, // e.g., "LGU"
-            'nextId' => $nextId, // e.g., 11
-            'countIndex' => $category->count_index, // e.g., 2
-            'totalSameCategory' => $totalSameCategory, // e.g., 0 (then +1 in JS)
-        ]);
     }
 }

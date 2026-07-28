@@ -153,7 +153,7 @@
 
     <!-- Buttons (hidden when printing) -->
     <div class="flex gap-3 justify-center mt-5 mb-5 print:hidden">
-        <a href="{{ route('units.edit', ['unit' => $inventory->id]) }}"
+        <a href="{{ route('inventory.edit', ['inventory' => $inventory->id]) }}"
             class="px-6 py-2 bg-gray-600 text-white rounded-md text-[16px] font-semibold shadow-md hover:bg-gray-700 transition">
             Go Back
         </a>

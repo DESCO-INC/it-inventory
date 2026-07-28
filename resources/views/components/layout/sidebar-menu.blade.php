@@ -27,8 +27,8 @@
 @endphp
 
 <div class="flex flex-col rounded-md {{ $isDropdownOpen
-                ? 'bg-[var(--color-secondary)] text-[var(--color-primary)] border-l-4 border-[var(--color-primary)]'
-                : 'text-[var(--color-secondary)] hover:bg-[var(--color-secondary)] hover:text-[var(--color-primary)]' }} ">
+                ? 'bg-[var(--secondary-color)] text-[var(--primary-color)] border-l-4 border-[var(--primary-color)]'
+                : 'text-[var(--primary-color)] hover:bg-[var(--sidebar-hover)] hover:text-[var(--primary-color)]' }} ">
     {{-- Dropdown Button --}}
     <button type="button" id="{{ $menuId }}_btn"
         class="flex items-center px-2.5 py-2 text-sm font-semibold rounded-md w-full text-left transition-colors duration-200">
@@ -59,8 +59,8 @@
             <a href="{{ $href }}"
                 class="flex items-center px-2 py-1 text-sm rounded-md transition-colors duration-150
                     {{ $isDropdownOpen
-                        ? 'bg-[var(--color-primary)] text-[var(--color-secondary)] border-l-2 border-[var(--color-primary)]'
-                        : 'text-[var(--color-secondary)] hover:bg-gray-100 hover:text-[var(--color-primary)]' }}">
+                        ? 'bg-[var(--primary-color)] text-[var(--secondary-color)] border-l-2 border-[var(--primary-color)]'
+                        : 'text-[var(--secondary-color)] hover:bg-gray-100 hover:text-[var(--primary-color)]' }}">
                 @if (!empty($link['icon']))
                     <x-dynamic-component :component="$link['icon']" class="w-4 h-4 mr-2" />
                 @endif

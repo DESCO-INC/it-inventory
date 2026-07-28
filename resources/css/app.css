@@ -10,53 +10,41 @@
         'Segoe UI Symbol', 'Noto Color Emoji';
 }
 
-@layer base {
-    :root {
-        --color-primary: #00c950;
-        --color-secondary: #FFFFFF;
-        --color-accent: #00a63e;
-        
-        --color-primary-hover: #02a242;
-        --color-secondary-hover: #b7b6b6;
-        --color-accent-hover: #018933;
-    }
-}
-
-
-@theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-        'Segoe UI Symbol', 'Noto Color Emoji';
-}
-
 :root {
-    --primary-color: #262626;
+    /* Background */
+    --primary-color: #f3f6fb;
 
-    --secondary-color: #171717;
-    --secondary-border-color: #404040;
+    /* Cards */
+    --secondary-color: #ffffff;
+    --secondary-hover-color: #f8fafc;
+    --secondary-border-color: #dbe3ee;
 
-    --accent-color: #ffffff;
-    --accent-hover-color: #272727;
-    --accent-active-color: #272727;
-
-    --text-color: #ffffff;
-}
-
-html.light-mode {
-    /* Main background */
-    --primary-color: #eef5f0;
-
-    /* Sidebar / cards */
-    --secondary-color: #f8fcf9;
-    --secondary-border-color: #d7e4db;
-
-    /* Buttons / accents */
-    --accent-color: #2f5d46;
-    --accent-hover-color: #e3eee6;
-    --accent-active-color: #d5e5da;
+    /* Brand Accent */
+    --accent-color: #3B82F6;
+    --accent-hover-color: #2563EB;
+    --accent-active-color: #1D4ED8;
 
     /* Text */
-    --text-color: #1f3a2d;
-    
+    --text-color: #1e293b;
+    --text-muted-color: #64748b;
+    --heading-color: #0f172a;
+
+    /* Table */
+    --table-header-bg: #1E3A5F;
+    --table-header-text: #ffffff;
+    --table-row-hover: #f1f5f9;
+
+    /* Sidebar */
+    --sidebar-bg: #1E3A5F;
+    --sidebar-hover: #27476F;
+    --sidebar-active: #356092;
+    --sidebar-text: #ffffff;
+
+    /* Status */
+    --success-color: #22C55E;
+    --warning-color: #F59E0B;
+    --danger-color: #EF4444;
+    --info-color: #3B82F6;
 }
 
 input,
