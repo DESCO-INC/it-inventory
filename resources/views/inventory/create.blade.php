@@ -73,21 +73,25 @@
         });
     </script>
 
+
+
     <script>
         const $categoryData = @json($category);
 
         function fetchControlNo(category_id) {
-            const baseUrl = "{{ url('/') }}";
-            return fetch(`${baseUrl}/units/next-control/${category_id}`)
-                .then(response => {
-                    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-                    return response.json();
+            const url = "{{ route('inventory.getNextControlNo', ':id') }}"
+                .replace(':id', category_id);
+
+            return fetch(url, {
+                    headers: {
+                        'Accept': 'application/json'
+                    }
                 })
-                .catch(error => {
-                    console.error(error);
-                    return {
-                        error: error.message
-                    };
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}`);
+                    }
+                    return response.json();
                 });
         }
 

@@ -153,4 +153,24 @@ class InventoryController extends Controller
 
         return back()->with('success', 'Inventory imported successfully!');
     }
+
+    public function getNextControlNo($categoryId)
+    {
+        // Get the unit category
+        $category = \App\Models\UnitCategory::findOrFail($categoryId);
+
+        // Get the next inventory ID (assuming 'id' is auto-increment in inventory table)
+        $nextId = \App\Models\Inventory::max('id') + 1;
+
+        // Count existing inventories for this category
+        $totalSameCategory = \App\Models\Inventory::where('unit_category_id', $categoryId)->count();
+
+        // Prepare the response
+        return response()->json([
+            'code' => $category->code, // e.g., "LGU"
+            'nextId' => $nextId, // e.g., 11
+            'countIndex' => $category->count_index, // e.g., 2
+            'totalSameCategory' => $totalSameCategory, // e.g., 0 (then +1 in JS)
+        ]);
+    }
 }

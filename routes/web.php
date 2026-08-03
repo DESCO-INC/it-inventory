@@ -20,6 +20,8 @@ Route::post('/logout', [AuthController::class, 'destroy'])->name('logout');
 // Inventory Controller
 Route::resource('inventory', InventoryController::class)->except(['show'])->middleware('auth');
 Route::post('/inventory/import', [InventoryController::class, 'import'])->name('inventory.import');
+Route::get('/next-control/{categoryId}', [InventoryController::class, 'getNextControlNo'])->name('inventory.getNextControlNo');
+
 
 // Accountability Controller
 Route::resource('accountability', AccountabilityController::class)->except(['show'])->middleware('auth');
