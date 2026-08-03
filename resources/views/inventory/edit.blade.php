@@ -69,7 +69,7 @@
                         </option>
                     </x-select>
 
-                    <x-input label="Remarks" name="remarks" />
+                    <x-input label="Remarks" name="remarks" value="{{ $inventory['remarks'] }}" />
 
                     <div id="disposedFields" class="contents">
                         <x-input label="Unit Weight" name="unit_weight"
