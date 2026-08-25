@@ -47,10 +47,12 @@ class InventorySoftwareController extends Controller
             'product_key' => 'nullable',
             'remarks' => 'nullable',
             'date_installed' => 'required|date',
-            'date_expired' => 'nullable|date',
+            'date_expired' => 'nullable',
         ]);
 
-        $validated = array_map('strtoupper', $validated);
+        $validated['software_id'] = strtoupper($validated['software_id']);
+        $validated['product_key'] = strtoupper($validated['product_key'] ?? '');
+        $validated['remarks'] = strtoupper($validated['remarks'] ?? '');
 
         $software->update($validated);
 
